@@ -15,7 +15,7 @@ AnalyseurLexical::~AnalyseurLexical()
 
 bool AnalyseurLexical::estBlanc(char caractere)
 {
-	return caractere == ' ' || caractere == '\t' || caractere == '\n';
+	return caractere == ' ' || caractere == '\t' || caractere == '\n' || estCommentaire(c);
 }
 
 char AnalyseurLexical::lireCaractere()
@@ -213,7 +213,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			}
 			lexeme += '\0';
 			lex.UL = NBRENTIER;
-			lex.attribut = (int)lexeme; // retourne la valeur du lexeme
+			lex.attribut = std::stoi(lexeme); //Converti la chaine lexeme en entier
 		}
 		else
 		{
@@ -230,18 +230,14 @@ TLexeme AnalyseurLexical::uniteSuivante()
 
 int AnalyseurLexical::indexIdentifiant(string chaine)
 {
-	return 0;
+	return tableIdent.insert(chaine);
 }
 
-int AnalyseurLexical::indexMotCle(string)
-{
 
-	return 0;
-}
 
-bool AnalyseurLexical::estMotCle(string chaine)
+int AnalyseurLexical::estMotCle(string mot)
 {
-	return chaine == "debut" || "fin" || "entier" || "tableau" || "arret" || "si" || "sinon" || "alors" || "tantque" || "faire" || "ecrire" || "lire";
+	return tableMotCle.find(mot)->second;
 }
 
 bool AnalyseurLexical::estLettre(char c)
@@ -252,4 +248,18 @@ bool AnalyseurLexical::estLettre(char c)
 bool AnalyseurLexical::estChiffre(char c)
 {
 	return '0' <= c && c <= '9';
+}
+
+bool AnalyseurLexical::estCommentaire(char)
+{
+	if (c == '{')
+	{
+		c = lireCaractere();
+			while (c != '}')
+		{
+			c == lireCaractere();
+		}
+		return true;
+	}
+	return false;
 }
