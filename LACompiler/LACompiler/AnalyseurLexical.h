@@ -1,13 +1,21 @@
 #pragma once
-typedef stuct{
+typedef struct{
 	int attribut;
 }TLexeme;
 class AnalyseurLexical
 {
+	enum TuniteLexical {
+		ERREUR, OPPLUS,COMMENTAIRE, VIRGULE, POINTVIRGULE, EGAL, AFFECTATION, PLUS, MOINS, MULTIPLICATION,DIVISION,
+		MODULO
+	};
+
 	public:
 		AnalyseurLexical();
 		~AnalyseurLexical();
-		Tlexeme lexemeSuivant();
+
+		bool estBlanc(char);
+		char lireCaractere();
+		int lexemeSuivant();
 		int indexIdentifiant();
 		int indexMotCle();
 		bool estMotCle();
