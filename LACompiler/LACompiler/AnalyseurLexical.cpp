@@ -6,26 +6,26 @@
 
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
-	code = "debut entier x; entier i; tableau T[13] debut fin fin";
+	//code = "debut entier x; entier i; tableau T[13] debut fin fin";
 	c = ' ';//Initialisation du caractère par un esapce
 
-	//ifstream lecteurFichier;
-	//lecteurFichier.open(fichier);
+	ifstream lecteurFichier;
+	lecteurFichier.open(fichier.c_str());
 
-	//// Vérification de l'ouverture du fichier
-	//if (!lecteurFichier.is_open()) {
-	//	cout << "Impossible d'ouvrire le fichier!" << endl;
-	//	exit(EXIT_FAILURE);
-	//}
-	//string ligne;
+	// Vérification de l'ouverture du fichier
+	if (!lecteurFichier.is_open()) {
+		cout << "Impossible d'ouvrire le fichier!" << endl;
+		exit(EXIT_FAILURE);
+	}
+	string ligne;
 
-	//// Copie du contenue du fichier dans la variable code
-	//while (lecteurFichier >> ligne) {
-	//	code += ligne;
-	//}
+	// Copie du contenue du fichier dans la variable code
+	while (getline(lecteurFichier,ligne)) {
+		code += ligne;
+	}
 
-	//// Fermeture du fichier
-	//lecteurFichier.close();
+	// Fermeture du fichier
+	lecteurFichier.close();
 	//cout << code;
 }
 
@@ -42,12 +42,12 @@ bool AnalyseurLexical::estBlanc(char caractere)
 
 char AnalyseurLexical::lireCaractere()
 {
-	//if (code.size() > 0) {
-	//	char c = code[0];
-	//	code.erase(0, 1);
-	//}
-	//else c = EOF;//Si le code est fini, on renvoie un end of file
-	cin >> c;
+	if (code.size() > 0) {
+		char c = code[0];
+		code.erase(0, 1);
+	}
+	else c = EOF;//Si le code est fini, on renvoie un end of file
+	
 	return c;
 }
 
@@ -73,13 +73,11 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		lex.UL = PLUS;
 		lex.attribut = -1;
 		c = lireCaractere();
-
 		break;
 	case '-':
 		lex.UL = MOINS;
 		lex.attribut = -1;
 		c = lireCaractere();
-
 		break;
 	case '*':
 		lex.UL = MULTIP;

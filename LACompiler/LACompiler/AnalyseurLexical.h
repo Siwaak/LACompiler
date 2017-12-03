@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>;
 #include <vector>;
 #include <string>;
@@ -30,6 +31,7 @@ class AnalyseurLexical
 		{11, "ecrire"},
 		{12, "lire"}
 	}; //liste des motsCle
+
 public:
 	AnalyseurLexical(string);
 	~AnalyseurLexical();
