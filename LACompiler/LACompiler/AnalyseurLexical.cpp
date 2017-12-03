@@ -1,10 +1,32 @@
 #include "stdafx.h"
 #include "AnalyseurLexical.h"
+#include <fstream>;
+#include <iostream>
 
 
-AnalyseurLexical::AnalyseurLexical()
+AnalyseurLexical::AnalyseurLexical(string fichier)
 {
+	code = "debut entier x; entier i; tableau T[13] debut fin fin";
+	c = ' ';//Initialisation du caractère par un esapce
 
+	//ifstream lecteurFichier;
+	//lecteurFichier.open(fichier);
+
+	//// Vérification de l'ouverture du fichier
+	//if (!lecteurFichier.is_open()) {
+	//	cout << "Impossible d'ouvrire le fichier!" << endl;
+	//	exit(EXIT_FAILURE);
+	//}
+	//string ligne;
+
+	//// Copie du contenue du fichier dans la variable code
+	//while (lecteurFichier >> ligne) {
+	//	code += ligne;
+	//}
+
+	//// Fermeture du fichier
+	//lecteurFichier.close();
+	//cout << code;
 }
 
 
@@ -20,7 +42,13 @@ bool AnalyseurLexical::estBlanc(char caractere)
 
 char AnalyseurLexical::lireCaractere()
 {
-	return 0;
+	//if (code.size() > 0) {
+	//	char c = code[0];
+	//	code.erase(0, 1);
+	//}
+	//else c = EOF;//Si le code est fini, on renvoie un end of file
+	cin >> c;
+	return c;
 }
 
 TLexeme AnalyseurLexical::uniteSuivante()
@@ -230,14 +258,16 @@ TLexeme AnalyseurLexical::uniteSuivante()
 
 int AnalyseurLexical::indexIdentifiant(string chaine)
 {
-	return tableIdent.insert(chaine);
+	//return tableIdent.insert(chaine);
+	return false;
 }
 
 
 
 int AnalyseurLexical::estMotCle(string mot)
 {
-	return tableMotCle.find(mot)->second;
+	//return tableMotCle.find(mot)->second;
+	return false;
 }
 
 bool AnalyseurLexical::estLettre(char c)
@@ -257,7 +287,7 @@ bool AnalyseurLexical::estCommentaire(char)
 		c = lireCaractere();
 			while (c != '}')
 		{
-			c == lireCaractere();
+			c = lireCaractere();
 		}
 		return true;
 	}

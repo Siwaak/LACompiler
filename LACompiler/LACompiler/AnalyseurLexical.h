@@ -15,6 +15,7 @@ class AnalyseurLexical
 	string lexeme;//stockera la valeur s'il s'agit d'un identificateur, d'un mot clé ou d'une constante
 	char c;//Caractere lu
 	map<int, string> tableIdent; //liste des identificateurs;
+	//map<int, string> tableMotCle;
 	const map<int, string> tableMotCle = {
 		{1,"debut" },
 		{2,"fin" },
@@ -30,7 +31,7 @@ class AnalyseurLexical
 		{12, "lire"}
 	}; //liste des motsCle
 public:
-	AnalyseurLexical();
+	AnalyseurLexical(string);
 	~AnalyseurLexical();
 
 	bool estBlanc(char);
