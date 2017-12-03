@@ -6,7 +6,7 @@
 using namespace std;
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
-	//code = "debut entier x; entier i; tableau T[13] debut fin fin";
+	code = "";// initialisation du code;
 	c = ' ';//Initialisation du caractère par un esapce
 
 	ifstream lecteurFichier;
@@ -21,12 +21,12 @@ AnalyseurLexical::AnalyseurLexical(string fichier)
 
 	// Copie du contenue du fichier dans la variable code
 	while (getline(lecteurFichier,ligne)) {
-		code += ligne;
+		code += ligne + '\n';
 	}
 
 	// Fermeture du fichier
 	lecteurFichier.close();
-	cout << code;
+	//cout << code;
 }
 
 
@@ -67,13 +67,12 @@ char AnalyseurLexical::lireCaractere()
 TLexeme AnalyseurLexical::uniteSuivante()
 {
 	TLexeme lex;
-
+	lexeme = "";
 	while (estBlanc(c)) {
-		c = lireCaractere();		
+		c = lireCaractere();	
+		if (c == '\n') cout << endl;
 	}
 		
-
-	
 	switch (c) {
 	case ',':
 		lex.UL = VIR;
@@ -231,14 +230,14 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		break;
 	case '{':
 		c = lireCaractere();
-		while (c != '}')
+		while (!codeEstFini() && c != '}')
 		{
 			lireCaractere();
-			cout << " ici";
 		}
 		if (c == '}') {
 			lex.UL = COMMENTAIRE;
 			lex.attribut = -1;
+			lireCaractere();
 		}
 		else
 		{
