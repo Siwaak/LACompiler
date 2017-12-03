@@ -17,32 +17,38 @@ class AnalyseurLexical
 	char c;//Caractere lu
 	map<int, string> tableIdent; //liste des identificateurs;
 	//map<int, string> tableMotCle;
-	const map<int, string> tableMotCle = {
-		{1,"debut" },
-		{2,"fin" },
-		{3, "entier" },
-		{4, "tableau"},
-		{5, "arret" },
-		{6, "si"},
-		{7, "sinon"},
-		{8, "alors"},
-		{9, "tantque"},
-		{10, "faire"},
-		{11, "ecrire"},
-		{12, "lire"}
+	const map<unsigned long, string> tableMotCle = {
+		{hashCode("debut"),"debut" },
+		{hashCode("fin"),"fin" },
+		{ hashCode("entier"), "entier" },
+		{ hashCode("tableau"), "tableau"},
+		{ hashCode("arret"), "arret" },
+		{ hashCode("si"), "si"},
+		{ hashCode("sinon"), "sinon"},
+		{ hashCode("alors"), "alors"},
+		{ hashCode("tantque"), "tantque"},
+		{ hashCode("faire"), "faire"},
+		{ hashCode("ecrire"), "ecrire"},
+		{ hashCode("lire"), "lire"}
 	}; //liste des motsCle
 
 public:
 	AnalyseurLexical(string);
 	~AnalyseurLexical();
 
+	 long hashCode(string chaine);
+
 	bool estBlanc(char);
 	char lireCaractere();
 	TLexeme uniteSuivante();
-	int indexIdentifiant(string);
-	int estMotCle(string);
-	bool estLettre(char);
+	 long indexIdentifiant(string);
+	 
+	 bool estMotCle(string mot);
+	 bool estLettre(char);
 	bool estChiffre(char);
 	bool estCommentaire(char);
+	bool codeEstFini();
+	void afficherTableMotsCle();
+	void afficherTableIdentificateurs();
 };
 

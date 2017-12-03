@@ -9,9 +9,9 @@ using namespace std;
 typedef enum {
 	MOTCLE, IDENT, VIR, POINTVIR, AFFEC, EGAL, DIFF, INF, INFEG, SUP, SUPEG, PLUS, MOINS,
 	MULTIP, DIVISION, MODULO, NEGATION, ET, OU, ACCOLOUV, ACCOFER, PAROUV, PARFER,
-	CROCHETOUV, CROCHETFER, NBRENTIER, ERR1, ERR2, ERR3
+	CROCHETOUV, CROCHETFER, NBRENTIER, COMMENTAIRE, ERR1, ERR2, ERR3, ERR4
 }UniteLexical;// Types des unités lexicales
-			  // ERR1 : & attendu, ERR2: | attendu, ERR3: caractere inattendu
+			  // ERR1 : & attendu, ERR2: | attendu, ERR3: caractere inattendu, ERR4 commentaire non fermé
 
 
 //Surcharge de << pour afficher la chaine de l'unité lexicale au lieu de son index.
@@ -46,9 +46,12 @@ inline ostream& operator<<(ostream& out, const UniteLexical value) {
 		INSERT_ELEMENT(CROCHETOUV);
 		INSERT_ELEMENT(CROCHETFER);
 		INSERT_ELEMENT(NBRENTIER);
+		INSERT_ELEMENT(COMMENTAIRE);
 		INSERT_ELEMENT(ERR1);
 		INSERT_ELEMENT(ERR2);
 		INSERT_ELEMENT(ERR3);
+		INSERT_ELEMENT(ERR4);
+
 #undef INSERT_ELEMENT
 	}
 
@@ -58,6 +61,6 @@ inline ostream& operator<<(ostream& out, const UniteLexical value) {
 
 typedef struct TLexeme {
 	UniteLexical UL;
-	int attribut;
+	long attribut;
 }TLexeme;
 

@@ -3,7 +3,7 @@
 #include <fstream>;
 #include <iostream>
 
-
+using namespace std;
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
 	//code = "debut entier x; entier i; tableau T[13] debut fin fin";
@@ -26,7 +26,7 @@ AnalyseurLexical::AnalyseurLexical(string fichier)
 
 	// Fermeture du fichier
 	lecteurFichier.close();
-	//cout << code;
+	cout << code;
 }
 
 
@@ -35,15 +35,28 @@ AnalyseurLexical::~AnalyseurLexical()
 
 }
 
+//fonction de hachage
+//h(i)=h(i-1)*33+codeASCII du caractère;
+ long AnalyseurLexical::hashCode(string chaine)
+{
+	unsigned long hash = 7;
+	int c;
+
+	for (int i = 0; i< chaine.length(); i++)
+		hash = hash * 33 + chaine[i];
+
+	return hash;
+}
+
 bool AnalyseurLexical::estBlanc(char caractere)
 {
-	return caractere == ' ' || caractere == '\t' || caractere == '\n' || estCommentaire(c);
+	return caractere == ' ' || caractere == '\t' || caractere == '\n';
 }
 
 char AnalyseurLexical::lireCaractere()
 {
 	if (code.size() > 0) {
-		char c = code[0];
+		 c = code[0];
 		code.erase(0, 1);
 	}
 	else c = EOF;//Si le code est fini, on renvoie un end of file
@@ -54,8 +67,13 @@ char AnalyseurLexical::lireCaractere()
 TLexeme AnalyseurLexical::uniteSuivante()
 {
 	TLexeme lex;
-	while (estBlanc(c))
-		c = lireCaractere();
+
+	while (estBlanc(c)) {
+		c = lireCaractere();		
+	}
+		
+
+	
 	switch (c) {
 	case ',':
 		lex.UL = VIR;
@@ -86,7 +104,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 
 		break;
 	case '/':
-		lex.UL = MULTIP;
+		lex.UL = DIVISION;
 		lex.attribut = -1;
 		c = lireCaractere();
 
@@ -211,6 +229,23 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			lex.attribut = -1;
 		}
 		break;
+	case '{':
+		c = lireCaractere();
+		while (c != '}')
+		{
+			lireCaractere();
+			cout << " ici";
+		}
+		if (c == '}') {
+			lex.UL = COMMENTAIRE;
+			lex.attribut = -1;
+		}
+		else
+		{
+			lex.UL = ERR4;
+			lex.attribut = -1;
+		}		
+		break;
 	default:
 		if (estLettre(c)) {
 			lexeme = c;
@@ -221,11 +256,14 @@ TLexeme AnalyseurLexical::uniteSuivante()
 				lexeme+=c;
 				c = lireCaractere();
 			}
-			lexeme+='\0';
-			if (estMotCle(lexeme))
+			if (estMotCle(lexeme)) {
 				lex.UL = MOTCLE;
-			lex.UL = IDENT;
-			lex.attribut = indexIdentifiant(lexeme);
+				lex.attribut = hashCode(lexeme);
+			}
+			else {
+				lex.UL = IDENT;
+				lex.attribut = indexIdentifiant(lexeme);
+			}
 		
 		}
 		else if (estChiffre(c))
@@ -237,7 +275,6 @@ TLexeme AnalyseurLexical::uniteSuivante()
 				lexeme.push_back(c);
 				c = lireCaractere();				
 			}
-			lexeme += '\0';
 			lex.UL = NBRENTIER;
 			lex.attribut = std::stoi(lexeme); //Converti la chaine lexeme en entier
 		}
@@ -248,23 +285,27 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 
 		break;
-
 	}
 	return lex;
 }
 
 
-int AnalyseurLexical::indexIdentifiant(string chaine)
+ long AnalyseurLexical::indexIdentifiant(string chaine)
 {
-	//return tableIdent.insert(chaine);
-	return false;
+	 
+	long index = hashCode(chaine);
+	tableIdent[index]=chaine;
+
+	return index;
 }
 
 
 
-int AnalyseurLexical::estMotCle(string mot)
+ bool AnalyseurLexical::estMotCle(string mot)
 {
-	//return tableMotCle.find(mot)->second;
+	long index = hashCode(mot);
+	if(tableMotCle.find(index)!= tableMotCle.end())
+		return true;
 	return false;
 }
 
@@ -278,16 +319,39 @@ bool AnalyseurLexical::estChiffre(char c)
 	return '0' <= c && c <= '9';
 }
 
-bool AnalyseurLexical::estCommentaire(char)
+bool AnalyseurLexical::estCommentaire(char carac)
 {
-	if (c == '{')
+	if (carac == '{')
 	{
-		c = lireCaractere();
-			while (c != '}')
+		carac = lireCaractere();
+		while (c != '}' || c!=EOF)
 		{
 			c = lireCaractere();
 		}
-		return true;
+		if(c== '}')
+			return true;
 	}
 	return false;
+}
+
+bool AnalyseurLexical::codeEstFini()
+{
+
+	return code.size()==0 || code[0] == EOF;
+}
+
+void AnalyseurLexical::afficherTableMotsCle()
+{
+	for (auto elem : tableMotCle)
+	{
+		std::cout << elem.first << "\t" << elem.second << endl;
+	}
+}
+
+void AnalyseurLexical::afficherTableIdentificateurs()
+{
+	for (auto elem : tableIdent)
+	{
+		std::cout << elem.first << "\t" << elem.second << endl;
+	}
 }
