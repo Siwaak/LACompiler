@@ -239,7 +239,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			}
 			if (estMotCle(lexeme)) {
 				lex.UL = MOTCLE;
-				lex.attribut = hashCode(lexeme);
+				lex.attribut = tableMotCle.find(lexeme)->second;
 			}
 			else {
 				lex.UL = IDENT;

@@ -29,7 +29,11 @@ class AnalyseurLexical
 		{ "tantque",9},
 		{"faire",10},
 		{ "ecrire",11},
-		{ "lire",12}
+		{ "lire",12},
+		{ "repeter",13},
+		{ "jusque",14 },
+		{ "cas",15 },
+		{ "pour",16 }
 	}; //liste des motsCle
 
 public:
