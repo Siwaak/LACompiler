@@ -12,43 +12,52 @@ using namespace std;
 
 class AnalyseurLexical
 {
-	string code;
+	string code; //contient le script à traduire
 	string lexeme;//stockera la valeur s'il s'agit d'un identificateur, d'un mot clé ou d'une constante
 	char c;//Caractere lu
 	map<int, string> tableIdent; //liste des identificateurs;
-	//map<int, string> tableMotCle;
-	const map<unsigned long, string> tableMotCle = {
-		{hashCode("debut"),"debut" },
-		{hashCode("fin"),"fin" },
-		{ hashCode("entier"), "entier" },
-		{ hashCode("tableau"), "tableau"},
-		{ hashCode("arret"), "arret" },
-		{ hashCode("si"), "si"},
-		{ hashCode("sinon"), "sinon"},
-		{ hashCode("alors"), "alors"},
-		{ hashCode("tantque"), "tantque"},
-		{ hashCode("faire"), "faire"},
-		{ hashCode("ecrire"), "ecrire"},
-		{ hashCode("lire"), "lire"}
+
+	const map<string, int> tableMotCle = {
+		{	"debut",1 },
+		{	"fin",2 },
+		{ "entier",3 },
+		{ "tableau",4},
+		{  "arret",5 },
+		{ "si",6},
+		{ "sinon",7},
+		{ "alors",8},
+		{ "tantque",9},
+		{"faire",10},
+		{ "ecrire",11},
+		{ "lire",12}
 	}; //liste des motsCle
 
 public:
 	AnalyseurLexical(string);
 	~AnalyseurLexical();
 
-	 long hashCode(string chaine);
+	long hashCode(string); //calcul un entier (index dans un talbeau) à partire d'une chaine
 
-	bool estBlanc(char);
-	char lireCaractere();
-	TLexeme uniteSuivante();
-	 long indexIdentifiant(string);
-	 
-	 bool estMotCle(string mot);
-	 bool estLettre(char);
+	bool estBlanc(char);//Vérifie si un caractère est blanc
+
+	void lireCaractere();//suprime le premier caractère de la variable code et le met dans c
+
+	TLexeme uniteSuivante();// récupère le lexeme suivant
+
+	long indexIdentifiant(string);	//Détermine l'index d'un identifiant dans le tableau. l'insert s'il n'existe pas
+
+	bool estMotCle(string mot);// verifie si un mot fait partie des mots clé
+
+	bool estLettre(char); 
+
 	bool estChiffre(char);
+
 	bool estCommentaire(char);
+
 	bool codeEstFini();
+
 	void afficherTableMotsCle();
+
 	void afficherTableIdentificateurs();
 };
 

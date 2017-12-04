@@ -20,13 +20,12 @@ AnalyseurLexical::AnalyseurLexical(string fichier)
 	string ligne;
 
 	// Copie du contenue du fichier dans la variable code
-	while (getline(lecteurFichier,ligne)) {
+	while (getline(lecteurFichier, ligne)) {
 		code += ligne + '\n';
 	}
 
 	// Fermeture du fichier
 	lecteurFichier.close();
-	//cout << code;
 }
 
 
@@ -37,12 +36,12 @@ AnalyseurLexical::~AnalyseurLexical()
 
 //fonction de hachage
 //h(i)=h(i-1)*33+codeASCII du caractère;
- long AnalyseurLexical::hashCode(string chaine)
+long AnalyseurLexical::hashCode(string chaine)
 {
 	unsigned long hash = 7;
 	int c;
 
-	for (int i = 0; i< chaine.length(); i++)
+	for (int i = 0; i < chaine.length(); i++)
 		hash = hash * 33 + chaine[i];
 
 	return hash;
@@ -53,98 +52,98 @@ bool AnalyseurLexical::estBlanc(char caractere)
 	return caractere == ' ' || caractere == '\t' || caractere == '\n';
 }
 
-char AnalyseurLexical::lireCaractere()
+void AnalyseurLexical::lireCaractere()
 {
 	if (code.size() > 0) {
-		 c = code[0];
+		c = code[0];
 		code.erase(0, 1);
 	}
 	else c = EOF;//Si le code est fini, on renvoie un end of file
-	
-	return c;
+
 }
 
 TLexeme AnalyseurLexical::uniteSuivante()
-{
+{//cherche à quel unitélexicale correspond le caractère ou la suite de caractère qui suivent
 	TLexeme lex;
 	lexeme = "";
-	while (estBlanc(c)) {
-		c = lireCaractere();	
+	while (estBlanc(c) ||estCommentaire(c)) {
+		lireCaractere();
 		if (c == '\n') cout << endl;
 	}
-		
+
+	
 	switch (c) {
 	case ',':
 		lex.UL = VIR;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case ';':
 		lex.UL = POINTVIR;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case '+':
 		lex.UL = PLUS;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 		break;
 	case '-':
 		lex.UL = MOINS;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 		break;
 	case '*':
 		lex.UL = MULTIP;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case '/':
 		lex.UL = DIVISION;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case '%':
 		lex.UL = MODULO;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case '(':
 		lex.UL = PAROUV;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case ')':
 		lex.UL = PARFER;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case '[':
 		lex.UL = CROCHETOUV;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case ']':
 		lex.UL = CROCHETFER;
 		lex.attribut = -1;
-		c = lireCaractere();
+		lireCaractere();
 
 		break;
 	case '=':
-		c = lireCaractere();
+		lireCaractere();
 		if (c == '=')
 		{
 			lex.UL = EGAL;
 			lex.attribut = -1;
-			c = lireCaractere();
+			lireCaractere();
 
 		}
 		else
@@ -154,12 +153,12 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 		break;
 	case '<':
-		c = lireCaractere();
+		lireCaractere();
 		if (c == '=')
 		{
 			lex.UL = INFEG;
 			lex.attribut = -1;
-			c = lireCaractere();
+			lireCaractere();
 
 		}
 		else
@@ -169,12 +168,12 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 		break;
 	case '>':
-		c = lireCaractere();
+		lireCaractere();
 		if (c == '=')
 		{
 			lex.UL = SUPEG;
 			lex.attribut = -1;
-			c = lireCaractere();
+			lireCaractere();
 
 		}
 		else
@@ -184,12 +183,12 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 		break;
 	case '!':
-		c = lireCaractere();
+		lireCaractere();
 		if (c == '=')
 		{
 			lex.UL = DIFF;
 			lex.attribut = -1;
-			c = lireCaractere();
+			lireCaractere();
 
 		}
 		else
@@ -199,12 +198,12 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 		break;
 	case '&':
-		c = lireCaractere();
+		lireCaractere();
 		if (c == '&')
 		{
 			lex.UL = ET;
 			lex.attribut = -1;
-			c = lireCaractere();
+			lireCaractere();
 
 		}
 		else
@@ -214,12 +213,12 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 		break;
 	case '|':
-		c = lireCaractere();
+		lireCaractere();
 		if (c == '|')
 		{
 			lex.UL = OU;
 			lex.attribut = -1;
-			c = lireCaractere();
+			lireCaractere();
 
 		}
 		else
@@ -228,32 +227,15 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			lex.attribut = -1;
 		}
 		break;
-	case '{':
-		c = lireCaractere();
-		while (!codeEstFini() && c != '}')
-		{
-			lireCaractere();
-		}
-		if (c == '}') {
-			lex.UL = COMMENTAIRE;
-			lex.attribut = -1;
-			lireCaractere();
-		}
-		else
-		{
-			lex.UL = ERR4;
-			lex.attribut = -1;
-		}		
-		break;
 	default:
 		if (estLettre(c)) {
 			lexeme = c;
-			
-			c = lireCaractere();
+
+			lireCaractere();
 			while (estLettre(c) || estChiffre(c) || c == '_')
 			{
-				lexeme+=c;
-				c = lireCaractere();
+				lexeme += c;
+				lireCaractere();
 			}
 			if (estMotCle(lexeme)) {
 				lex.UL = MOTCLE;
@@ -263,16 +245,16 @@ TLexeme AnalyseurLexical::uniteSuivante()
 				lex.UL = IDENT;
 				lex.attribut = indexIdentifiant(lexeme);
 			}
-		
+
 		}
 		else if (estChiffre(c))
 		{
-			lexeme.push_back(c); // remplissage du tableau lexeme
-			c = lireCaractere();
+			lexeme += c ; // remplissage du tableau lexeme ( concatenation )
+			lireCaractere();
 			while (estChiffre(c))
 			{
-				lexeme.push_back(c);
-				c = lireCaractere();				
+				lexeme += c;
+				lireCaractere();
 			}
 			lex.UL = NBRENTIER;
 			lex.attribut = std::stoi(lexeme); //Converti la chaine lexeme en entier
@@ -284,26 +266,25 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 
 		break;
-	}
+	}//switch(c)
 	return lex;
-}
+}//uniteSuivante()
 
 
- long AnalyseurLexical::indexIdentifiant(string chaine)
+long AnalyseurLexical::indexIdentifiant(string chaine)
 {
-	 
+
 	long index = hashCode(chaine);
-	tableIdent[index]=chaine;
+	tableIdent[index] = chaine;
 
 	return index;
 }
 
 
 
- bool AnalyseurLexical::estMotCle(string mot)
+bool AnalyseurLexical::estMotCle(string mot)
 {
-	long index = hashCode(mot);
-	if(tableMotCle.find(index)!= tableMotCle.end())
+	if (tableMotCle.find(mot) != tableMotCle.end())
 		return true;
 	return false;
 }
@@ -322,13 +303,14 @@ bool AnalyseurLexical::estCommentaire(char carac)
 {
 	if (carac == '{')
 	{
-		carac = lireCaractere();
-		while (c != '}' || c!=EOF)
+		lireCaractere();
+		while (!codeEstFini() && c != '}')
 		{
-			c = lireCaractere();
+			lireCaractere();
 		}
-		if(c== '}')
+		if (c == '}') 
 			return true;
+		
 	}
 	return false;
 }
@@ -336,19 +318,23 @@ bool AnalyseurLexical::estCommentaire(char carac)
 bool AnalyseurLexical::codeEstFini()
 {
 
-	return code.size()==0 || code[0] == EOF;
+	return code.size() == 0 || code[0] == EOF;
 }
 
 void AnalyseurLexical::afficherTableMotsCle()
 {
+	cout << endl << endl << "TABLE DES MOTS CLES" << endl;
+	cout << "======================================" << endl << endl;
 	for (auto elem : tableMotCle)
 	{
-		std::cout << elem.first << "\t" << elem.second << endl;
+		std::cout << elem.second << "\t" << elem.first << endl;
 	}
 }
 
 void AnalyseurLexical::afficherTableIdentificateurs()
 {
+	cout << endl << endl << "TABLE DES IDENTIFICATEURS" << endl;
+	cout << "======================================" << endl << endl;
 	for (auto elem : tableIdent)
 	{
 		std::cout << elem.first << "\t" << elem.second << endl;
