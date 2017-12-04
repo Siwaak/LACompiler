@@ -3,6 +3,8 @@
 #include <iostream>;
 #include <map>;
 #include <string>;
+#include <algorithm>;
+
 
 using namespace std;
 
@@ -64,3 +66,10 @@ typedef struct TLexeme {
 	long attribut;
 }TLexeme;
 
+//Met un mot en minuscule
+inline string enMiniscule(string chaine) {
+	
+	 transform(chaine.begin(), chaine.end(), chaine.begin(), (int(*)(int))tolower);
+
+	 return chaine;
+}

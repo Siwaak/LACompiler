@@ -239,7 +239,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			}
 			if (estMotCle(lexeme)) {
 				lex.UL = MOTCLE;
-				lex.attribut = tableMotCle.find(lexeme)->second;
+				lex.attribut = tableMotCle.find(enMiniscule(lexeme))->second;
 			}
 			else {
 				lex.UL = IDENT;
@@ -273,17 +273,18 @@ TLexeme AnalyseurLexical::uniteSuivante()
 
 long AnalyseurLexical::indexIdentifiant(string chaine)
 {
-
-	long index = hashCode(chaine);
-	tableIdent[index] = chaine;
+	string mot = enMiniscule(chaine);
+	long index = hashCode(mot);
+	tableIdent[index] = mot;
 
 	return index;
 }
 
 
 
-bool AnalyseurLexical::estMotCle(string mot)
+bool AnalyseurLexical::estMotCle(string chaine)
 {
+	string mot = enMiniscule(chaine);
 	if (tableMotCle.find(mot) != tableMotCle.end())
 		return true;
 	return false;
