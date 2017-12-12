@@ -7,6 +7,7 @@ using namespace std;
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
 	code = "";// initialisation du code;
+	
 	c = ' ';//Initialisation du caractère par un esapce
 
 	ifstream lecteurFichier;
@@ -36,10 +37,10 @@ AnalyseurLexical::~AnalyseurLexical()
 
 //fonction de hachage
 //h(i)=h(i-1)*33+codeASCII du caractère;
+
 long AnalyseurLexical::hashCode(string chaine)
 {
-	unsigned long hash = 7;
-	int c;
+	long hash = 7;	
 
 	for (int i = 0; i < chaine.length(); i++)
 		hash = hash * 33 + chaine[i];
@@ -55,7 +56,9 @@ bool AnalyseurLexical::estBlanc(char caractere)
 void AnalyseurLexical::lireCaractere()
 {
 	if (code.size() > 0) {
+		//on lit le caractère
 		c = code[0];
+		//On supprime la case correspondante
 		code.erase(0, 1);
 	}
 	else c = EOF;//Si le code est fini, on renvoie un end of file
@@ -69,9 +72,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 	while (estBlanc(c) ||estCommentaire(c)) {
 		lireCaractere();
 		if (c == '\n') cout << endl;
-	}
-
-	
+	}	
 	switch (c) {
 	case ',':
 		lex.UL = VIR;
@@ -234,6 +235,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			lireCaractere();
 			while (estLettre(c) || estChiffre(c) || c == '_')
 			{
+				//aj
 				lexeme += c;
 				lireCaractere();
 			}
@@ -249,11 +251,13 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 		else if (estChiffre(c))
 		{
-			lexeme += c ; // remplissage du tableau lexeme ( concatenation )
+
+			//aj
+			lexeme = c ; // remplissage du tableau lexeme ( concatenation )
 			lireCaractere();
 			while (estChiffre(c))
 			{
-				lexeme += c;
+				lexeme += c;// remplissage du tableau lexeme ( concatenation )
 				lireCaractere();
 			}
 			lex.UL = NBRENTIER;
@@ -336,8 +340,8 @@ void AnalyseurLexical::afficherTableIdentificateurs()
 {
 	cout << endl << endl << "TABLE DES IDENTIFICATEURS" << endl;
 	cout << "======================================" << endl << endl;
-	for (auto elem : tableIdent)
+	for(map<long, string>::iterator elem  = tableIdent.begin(); elem !=tableIdent.end(); elem++)
 	{
-		std::cout << elem.first << "\t" << elem.second << endl;
+		std::cout << elem->first << "\t" << elem->second << endl;
 	}
 }

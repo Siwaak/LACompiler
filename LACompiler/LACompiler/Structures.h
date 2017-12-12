@@ -10,7 +10,7 @@ using namespace std;
 
 typedef enum {
 	MOTCLE, IDENT, VIR, POINTVIR, AFFEC, EGAL, DIFF, INF, INFEG, SUP, SUPEG, PLUS, MOINS,
-	MULTIP, DIVISION, MODULO, NEGATION, ET, OU, ACCOLOUV, ACCOLFER, PAROUV, PARFER,
+	MULTIP, DIVISION, MODULO, NEGATION, ET, OU, PAROUV, PARFER,
 	CROCHETOUV, CROCHETFER, NBRENTIER, COMMENTAIRE, ERR1, ERR2, ERR3, ERR4
 }UniteLexical;// Types des unités lexicales
 			  // ERR1 : & attendu, ERR2: | attendu, ERR3: caractere inattendu, ERR4 commentaire non fermé
@@ -18,6 +18,7 @@ typedef enum {
 
 //Surcharge de << pour afficher la chaine de l'unité lexicale au lieu de son index.
 //Cette fonction est inline pour éviter des définitions multiples
+
 inline ostream& operator<<(ostream& out, const UniteLexical value) {
 	static map<UniteLexical, string> strings;
 	if (strings.size() == 0) {
@@ -41,8 +42,6 @@ inline ostream& operator<<(ostream& out, const UniteLexical value) {
 		INSERT_ELEMENT(NEGATION);
 		INSERT_ELEMENT(ET);
 		INSERT_ELEMENT(OU);
-		INSERT_ELEMENT(ACCOLOUV);
-		INSERT_ELEMENT(ACCOLFER);
 		INSERT_ELEMENT(PAROUV);
 		INSERT_ELEMENT(PARFER);
 		INSERT_ELEMENT(CROCHETOUV);
