@@ -15,7 +15,7 @@ class AnalyseurLexical
 	string code; //contient le script à traduire
 	string lexeme;//stockera la valeur s'il s'agit d'un identificateur, d'un mot clé ou d'une constante
 	char c;//Caractere lu
-	
+
 	map<long, string> tableIdent; //liste des identificateurs;
 
 	const map<string, int> tableMotCle = {
@@ -34,8 +34,9 @@ class AnalyseurLexical
 									{ "repeter",13 },
 									{ "jusque",14 },
 									{ "cas",15 },
-									{ "pour",16 }
-								}; //liste des motsCle
+									{ "pour",16 },
+									{ "switch",17 }
+	}; //liste des motsCle
 
 public:
 	AnalyseurLexical(string);
@@ -53,7 +54,7 @@ public:
 
 	bool estMotCle(string mot);// verifie si un mot fait partie des mots clé
 
-	bool estLettre(char); 
+	bool estLettre(char);
 
 	bool estChiffre(char);
 

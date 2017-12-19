@@ -11,7 +11,7 @@ using namespace std;
 typedef enum {
 	MOTCLE, IDENT, VIR, POINTVIR, AFFEC, EGAL, DIFF, INF, INFEG, SUP, SUPEG, PLUS, MOINS,
 	MULTIP, DIVISION, MODULO, NEGATION, ET, OU, PAROUV, PARFER,
-	CROCHETOUV, CROCHETFER, NBRENTIER, COMMENTAIRE, ERR1, ERR2, ERR3, ERR4
+	CROCHETOUV, CROCHETFER, NBRENTIER, COMMENTAIRE, DXPOINT, ERR1, ERR2, ERR3, ERR4
 }UniteLexical;// Types des unités lexicales
 			  // ERR1 : & attendu, ERR2: | attendu, ERR3: caractere inattendu, ERR4 commentaire non fermé
 
@@ -19,44 +19,128 @@ typedef enum {
 //Surcharge de << pour afficher la chaine de l'unité lexicale au lieu de son index.
 //Cette fonction est inline pour éviter des définitions multiples
 
-inline ostream& operator<<(ostream& out, const UniteLexical value) {
-	static map<UniteLexical, string> strings;
-	if (strings.size() == 0) {
-#define INSERT_ELEMENT(p) strings[p] = #p
-		INSERT_ELEMENT(MOTCLE);
-		INSERT_ELEMENT(IDENT);
-		INSERT_ELEMENT(VIR);
-		INSERT_ELEMENT(POINTVIR);
-		INSERT_ELEMENT(AFFEC);
-		INSERT_ELEMENT(EGAL);
-		INSERT_ELEMENT(DIFF);
-		INSERT_ELEMENT(INF);
-		INSERT_ELEMENT(INFEG);
-		INSERT_ELEMENT(SUP);
-		INSERT_ELEMENT(SUPEG);
-		INSERT_ELEMENT(PLUS);
-		INSERT_ELEMENT(MOINS);
-		INSERT_ELEMENT(MULTIP);
-		INSERT_ELEMENT(DIVISION);
-		INSERT_ELEMENT(MODULO);
-		INSERT_ELEMENT(NEGATION);
-		INSERT_ELEMENT(ET);
-		INSERT_ELEMENT(OU);
-		INSERT_ELEMENT(PAROUV);
-		INSERT_ELEMENT(PARFER);
-		INSERT_ELEMENT(CROCHETOUV);
-		INSERT_ELEMENT(CROCHETFER);
-		INSERT_ELEMENT(NBRENTIER);
-		INSERT_ELEMENT(COMMENTAIRE);
-		INSERT_ELEMENT(ERR1);
-		INSERT_ELEMENT(ERR2);
-		INSERT_ELEMENT(ERR3);
-		INSERT_ELEMENT(ERR4);
+inline ostream& operator<<(ostream& out, const UniteLexical ul) {
+	string chaineUl;
 
-#undef INSERT_ELEMENT
+	switch (ul) {
+	case MOTCLE : 
+		chaineUl = "MOTCLE";
+		break;
+
+	case IDENT:
+		chaineUl = "IDENT";
+		break;
+
+	case VIR:
+		chaineUl = "VIR";
+		break;
+
+	case POINTVIR:
+		chaineUl = "POINTVIR";
+		break;
+
+	case AFFEC:
+		chaineUl = "AFFEC";
+		break;
+
+	case EGAL:
+		chaineUl = "EGAL";
+		break;
+
+	case DIFF:
+		chaineUl = "DIFF";
+		break;
+
+	case INF:
+		chaineUl = "INF";
+		break;
+	case INFEG:
+		chaineUl = "INFEG";
+		break;
+
+	case SUP:
+		chaineUl = "SUP";
+		break;
+
+	case SUPEG:
+		chaineUl = "SUPEG";
+		break;
+
+	case PLUS:
+		chaineUl = "PLUS";
+		break;
+		
+	case MOINS:
+		chaineUl = "MOINS";
+		break;
+
+	case MULTIP:
+		chaineUl = "MULTIP";
+		break;
+
+	case DIVISION:
+		chaineUl = "DIVISION";
+		break;
+		
+	case MODULO:
+		chaineUl = "MODULO";
+		break;
+
+	case NEGATION:
+		chaineUl = "NEGATION";
+		break;
+		
+	case ET:
+		chaineUl = "ET";
+		break;
+
+	case OU:
+		chaineUl = "OU";
+		break;
+
+	case PAROUV:
+		chaineUl = "PAROUV";
+		break;
+
+	case PARFER:
+		chaineUl = "PARFER";
+		break;
+
+	case CROCHETOUV:
+		chaineUl = "CROCHETOUV";
+		break;
+
+	case NBRENTIER:
+		chaineUl = "NBRENTIER";
+		break;
+		
+	case COMMENTAIRE:
+		chaineUl = "COMMENTAIRE";
+		break;
+	case DXPOINT:
+		chaineUl = "DXPOINT";
+		break;
+		
+	case ERR1:
+		chaineUl = "ERR1";
+
+		break;
+	case ERR2:
+		chaineUl = "ERR2";
+		break;
+	
+	case ERR3:
+		chaineUl = "ERR3";
+		break;
+
+	case ERR4:
+		chaineUl = "ERR4";
+		break;
+	default :
+		break;
 	}
 
-	return out << strings[value];
+	return out << chaineUl;
 }
 
 

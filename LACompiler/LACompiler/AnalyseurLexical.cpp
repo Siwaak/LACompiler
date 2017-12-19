@@ -40,7 +40,8 @@ AnalyseurLexical::~AnalyseurLexical()
 
 long AnalyseurLexical::hashCode(string chaine)
 {
-	long hash = 7;	
+	long hash = 0;	
+	 
 
 	for (int i = 0; i < chaine.length(); i++)
 		hash = hash * 33 + chaine[i];
@@ -90,7 +91,8 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		lex.UL = PLUS;
 		lex.attribut = -1;
 		lireCaractere();
-		break;
+		break; 
+
 	case '-':
 		lex.UL = MOINS;
 		lex.attribut = -1;
@@ -160,7 +162,6 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			lex.UL = INFEG;
 			lex.attribut = -1;
 			lireCaractere();
-
 		}
 		else
 		{
@@ -175,7 +176,6 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			lex.UL = SUPEG;
 			lex.attribut = -1;
 			lireCaractere();
-
 		}
 		else
 		{
@@ -220,13 +220,17 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			lex.UL = OU;
 			lex.attribut = -1;
 			lireCaractere();
-
 		}
 		else
 		{
 			lex.UL = ERR2;
 			lex.attribut = -1;
 		}
+		break;
+	case ':':
+		lex.UL = DXPOINT;
+		lex.attribut = -1;
+		lireCaractere();		
 		break;
 	default:
 		if (estLettre(c)) {
