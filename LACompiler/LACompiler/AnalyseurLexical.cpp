@@ -4,10 +4,31 @@
 #include <iostream>
 
 using namespace std;
+
+const map<string, int>AnalyseurLexical::tableMotCle = {
+														{ "debut",1 },
+														{ "fin",2 },
+														{ "entier",3 },
+														{ "tableau",4 },
+														{ "arret",5 },
+														{ "si",6 },
+														{ "sinon",7 },
+														{ "alors",8 },
+														{ "tantque",9 },
+														{ "faire",10 },
+														{ "ecrire",11 },
+														{ "lire",12 },
+														{ "repeter",13 },
+														{ "jusque",14 },
+														{ "cas",15 },
+														{ "pour",16 },
+														{ "switch",17 }
+}; //liste des motsCle
+
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
 	code = "";// initialisation du code;
-	
+
 	c = ' ';//Initialisation du caractère par un esapce
 
 	ifstream lecteurFichier;
@@ -40,8 +61,8 @@ AnalyseurLexical::~AnalyseurLexical()
 
 long AnalyseurLexical::hashCode(string chaine)
 {
-	long hash = 0;	
-	 
+	long hash = 0;
+
 
 	for (int i = 0; i < chaine.length(); i++)
 		hash = hash * 33 + chaine[i];
@@ -70,10 +91,10 @@ TLexeme AnalyseurLexical::uniteSuivante()
 {//cherche à quel unitélexicale correspond le caractère ou la suite de caractère qui suivent
 	TLexeme lex;
 	lexeme = "";
-	while (estBlanc(c) ||estCommentaire(c)) {
+	while (estBlanc(c) || estCommentaire(c)) {
 		lireCaractere();
 		if (c == '\n') cout << endl;
-	}	
+	}
 	switch (c) {
 	case ',':
 		lex.UL = VIR;
@@ -91,7 +112,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		lex.UL = PLUS;
 		lex.attribut = -1;
 		lireCaractere();
-		break; 
+		break;
 
 	case '-':
 		lex.UL = MOINS;
@@ -230,7 +251,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 	case ':':
 		lex.UL = DXPOINT;
 		lex.attribut = -1;
-		lireCaractere();		
+		lireCaractere();
 		break;
 	default:
 		if (estLettre(c)) {
@@ -257,7 +278,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		{
 
 			//aj
-			lexeme = c ; // remplissage du tableau lexeme ( concatenation )
+			lexeme = c; // remplissage du tableau lexeme ( concatenation )
 			lireCaractere();
 			while (estChiffre(c))
 			{
@@ -317,9 +338,9 @@ bool AnalyseurLexical::estCommentaire(char carac)
 		{
 			lireCaractere();
 		}
-		if (c == '}') 
+		if (c == '}')
 			return true;
-		
+
 	}
 	return false;
 }
@@ -344,7 +365,7 @@ void AnalyseurLexical::afficherTableIdentificateurs()
 {
 	cout << endl << endl << "TABLE DES IDENTIFICATEURS" << endl;
 	cout << "======================================" << endl << endl;
-	for(map<long, string>::iterator elem  = tableIdent.begin(); elem !=tableIdent.end(); elem++)
+	for (map<long, string>::iterator elem = tableIdent.begin(); elem != tableIdent.end(); elem++)
 	{
 		std::cout << elem->first << "\t" << elem->second << endl;
 	}

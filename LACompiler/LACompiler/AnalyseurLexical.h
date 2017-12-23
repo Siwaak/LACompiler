@@ -18,29 +18,11 @@ class AnalyseurLexical
 
 	map<long, string> tableIdent; //liste des identificateurs;
 
-	const map<string, int> tableMotCle = {
-									{ "debut",1 },
-									{ "fin",2 },
-									{ "entier",3 },
-									{ "tableau",4 },
-									{  "arret",5 },
-									{ "si",6 },
-									{ "sinon",7 },
-									{ "alors",8 },
-									{ "tantque",9 },
-									{ "faire",10 },
-									{ "ecrire",11 },
-									{ "lire",12 },
-									{ "repeter",13 },
-									{ "jusque",14 },
-									{ "cas",15 },
-									{ "pour",16 },
-									{ "switch",17 }
-	}; //liste des motsCle
-
+	
 public:
 	AnalyseurLexical(string);
 	~AnalyseurLexical();
+	static const map<string, int> tableMotCle;
 
 	long hashCode(string); //calcul un entier (index dans un talbeau) à partire d'une chaine
 
