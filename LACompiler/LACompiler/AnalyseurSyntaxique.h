@@ -20,6 +20,8 @@ public:
 	/*Verifie si le motCourant correspond au mot cle passé en arguement */
 	bool motCourantEgalAuMotCle(string);
 	void verifierSyntaxe();
+
+	/**Non terminaux*/
 	bool programme();
 	bool listeDeDeclaration();
 	bool declaration();
@@ -45,5 +47,22 @@ public:
 	bool comparaisonPrime();
 	bool identificateur();
 	bool nbEntier();
+
+	/*Suivants*/
+	bool suivantListeDeDeclaration(TLexeme);
+	bool suivantDeclarationPrime(TLexeme);
+	bool suivantListeDIstruction(TLexeme);
+	bool suivantSinon(TLexeme);
+	bool suivantCases(TLexeme);
+	bool suivantExpressionPrime(TLexeme);
+	bool suivantExpressionSimplePrime(TLexeme);
+	bool suivantTermePrime(TLexeme);
+	bool suivantFacteurPrime(TLexeme);
+	bool suivantFacteurSeconde(TLexeme);
+	bool suivantListeDArgumentPrime(TLexeme);
+	bool suivantComparaisonPrime(TLexeme);
+	
+
+	
 };
 

@@ -223,36 +223,165 @@ bool AnalyseurSyntaxique::instruction()
 
 bool AnalyseurSyntaxique::instructionPrime()
 {
+	if (motCourant.UL == AFFEC)
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (expression())
+			return true;
+		//Il y a une erreur;
+		return false;
+	}
+	else if (motCourant.UL == CROCHETOUV)
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (expressionSimple())
+		{
+			if (motCourant.UL == CROCHETFER)
+			{
+				motCourant = analyseurLexical->uniteSuivante();
+				if (instructionSeconde())
+				{
+					return true;
+				}
+				return false;
+			}
+		}
+	}
 	return false;
 }
 
 bool AnalyseurSyntaxique::instructionSeconde()
 {
+	if (motCourant.UL == AFFEC)
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (expression())
+		{
+			return true;
+		}
+		//Il y a une erreur;
+		return false;
+	}
+	else if (motCourant.UL == CROCHETOUV)
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (expressionSimple())
+		{
+			if (motCourant.UL == CROCHETFER)
+			{
+				motCourant = analyseurLexical->uniteSuivante();
+				if (motCourant.UL == AFFEC)
+				{
+					motCourant = analyseurLexical->uniteSuivante();
+					if (expression())
+					{
+						return true;
+					}
+					return false;
+				}
+			}
+		}
+	}
 	return false;
 }
 
 bool AnalyseurSyntaxique::sinon()
 {
-	return false;
+	if (motCourantEgalAuMotCle("sinon"))
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (instruction())
+		{
+			return true;
+		}
+		return false;
+	}
+	else
+		/**EPSILON*/
+		return false;
 }
 
 bool AnalyseurSyntaxique::cases()
 {
-	return false;
+	if (motCourantEgalAuMotCle("cas"))
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (nbEntier())
+		{
+			if (motCourant.UL == DXPOINT)
+			{
+				motCourant = analyseurLexical->uniteSuivante();
+				if (instruction())
+				{
+					if (motCourantEgalAuMotCle("arret"))
+					{
+						motCourant = analyseurLexical->uniteSuivante();
+						if (cases())
+						{
+							return true;
+						}
+						return false;
+					}
+					return false;
+				}
+			}
+		}
+	}
+	else
+		/**EPSILON*/
+		return false;
 }
 
 bool AnalyseurSyntaxique::expression()
 {
+	if (expressionSimple())
+	{
+		if (expressionPrime())
+		{
+			return true;
+		}
+		return false;
+	}
 	return false;
 }
 
 bool AnalyseurSyntaxique::expressionPrime()
 {
-	return false;
+	if (comparaison())
+	{
+		if (expressionSimple())
+		{
+			return true;
+		}
+		return false;
+	}
+	else
+		/**EPSILON*/
+		return false;
 }
 
 bool AnalyseurSyntaxique::expressionSimple()
 {
+	if (terme())
+	{
+		if (expressionSimplePrime())
+		{
+			return true;
+		}
+		return false;
+	}
+	else if (motCourant.UL == MOINS)
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (terme())
+		{
+			if (expressionSimplePrime())
+			{
+				return true;
+			}
+			return false;
+		}
+	}
 	return false;
 }
 
@@ -430,4 +559,9 @@ bool AnalyseurSyntaxique::identificateur()
 bool AnalyseurSyntaxique::nbEntier()
 {
 	return motCourant.UL == NBRENTIER;
+}
+
+bool AnalyseurSyntaxique::suivantDeclarationPrime(TLexeme lex)
+{ 
+	return lex.UL == POINTVIR;
 }
