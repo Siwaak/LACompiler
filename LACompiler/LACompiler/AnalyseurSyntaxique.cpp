@@ -23,7 +23,7 @@ bool AnalyseurSyntaxique::motCourantEgalAuMotCle(string chaineLexicale)
 void AnalyseurSyntaxique::verifierSyntaxe()
 {
 	if (programme())
-		cout << "true" << endl;
+		cout << "true " << endl;
 	else cout << "false" << endl;
 }
 
