@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "AnalyseurSyntaxique.h"
 
 
@@ -20,6 +20,13 @@ bool AnalyseurSyntaxique::motCourantEgalAuMotCle(string chaineLexicale)
 	return motCourant.UL == MOTCLE && motCourant.attribut == AnalyseurLexical::tableMotCle.find(enMiniscule(chaineLexicale))->second;
 }
 
+void AnalyseurSyntaxique::verifierSyntaxe()
+{
+	if (programme())
+		cout << "true" << endl;
+	else cout << "false" << endl;
+}
+
 bool AnalyseurSyntaxique::programme()
 {
 	if (motCourantEgalAuMotCle("debut")) {
@@ -33,7 +40,7 @@ bool AnalyseurSyntaxique::programme()
 
 bool AnalyseurSyntaxique::listeDeDeclaration()
 {
-	//<liste de declarations> –> <declaration> ; <liste de declarations>
+	//<liste de declarations> â€“> <declaration> ; <liste de declarations>
 	if (declaration()) {
 		if (motCourant.UL == POINTVIR) {
 			motCourant = analyseurLexical->uniteSuivante();
@@ -44,22 +51,22 @@ bool AnalyseurSyntaxique::listeDeDeclaration()
 		}
 	}
 	else 
-		 //<liste de declarations> –>e
-		//il faut vérifier si le mot courant appartient à suivant de listeDeDeclaration
+		 //<liste de declarations> â€“>e
+		//il faut vÃ©rifier si le mot courant appartient Ã  suivant de listeDeDeclaration
 		return false;
 	
 }
 
 bool AnalyseurSyntaxique::declaration()
 {
-	//<declaration> –> entier <identificateur>
+	//<declaration> â€“> entier <identificateur>
 	if (motCourantEgalAuMotCle("entier")) {
 		motCourant = analyseurLexical->uniteSuivante();
 		if (identificateur())
 			return true;
 
 	}
-	//<declaration> –>tableau entier <identificateur>[<nb entier>] <declaration prime>
+	//<declaration> â€“>tableau entier <identificateur>[<nb entier>] <declaration prime>
 	else if (motCourantEgalAuMotCle("tableau")) {
 		motCourant = analyseurLexical->uniteSuivante();
 
@@ -87,7 +94,7 @@ bool AnalyseurSyntaxique::declaration()
 
 bool AnalyseurSyntaxique::declarationPrime()
 {
-	//<declaration prime> –> [ <nb entier> ]
+	//<declaration prime> â€“> [ <nb entier> ]
 	if (motCourant.UL == CROCHETOUV) {
 		motCourant = analyseurLexical->uniteSuivante();
 		if (nbEntier() && motCourant.UL == CROCHETFER) {
@@ -97,15 +104,15 @@ bool AnalyseurSyntaxique::declarationPrime()
 		}
 	}
 	else
-		//<declaration prime> –>e
-		//on vérifie si le mot courant appartient au suivant de declarationPrime
+		//<declaration prime> â€“>e
+		//on vÃ©rifie si le mot courant appartient au suivant de declarationPrime
 
 	return false;
 }
 
 bool AnalyseurSyntaxique::listeDIstruction()
 {
-	//<liste d’instructions> –> <instruction>; <liste d’instructions>
+	//<liste dâ€™instructions> â€“> <instruction>; <liste dâ€™instructions>
 	if (instruction()) {
 		if (motCourant.UL == POINTVIR) {
 			motCourant = analyseurLexical->uniteSuivante();
@@ -116,25 +123,25 @@ bool AnalyseurSyntaxique::listeDIstruction()
 		}
 	}
 	else
-		//<liste d’instructions>  –>e
-		//il faut vérifier si le mot courant appartient à suivant de listeDInstruction
+		//<liste dâ€™instructions>  â€“>e
+		//il faut vÃ©rifier si le mot courant appartient Ã  suivant de listeDInstruction
 	return false;
 }
 
 bool AnalyseurSyntaxique::instruction()
 {
-	//<instruction> –> debut <liste d’instructions> fin
+	//<instruction> â€“> debut <liste dâ€™instructions> fin
 	if (motCourantEgalAuMotCle("debut")) {
 		motCourant = analyseurLexical->uniteSuivante();
 
 		return listeDIstruction() && motCourantEgalAuMotCle("fin");
 	}
-	//<instruction> –> arret
+	//<instruction> â€“> arret
 	else if(motCourantEgalAuMotCle("arret"))	{
 		motCourant = analyseurLexical->uniteSuivante();
 		return true;
 	}
-	//<instruction> –>si <expression> alors <instruction> <sinon>
+	//<instruction> â€“>si <expression> alors <instruction> <sinon>
 	else if (motCourantEgalAuMotCle("si")) {
 		motCourant = analyseurLexical->uniteSuivante();
 		if (expression() && motCourantEgalAuMotCle("alors")) {
@@ -143,7 +150,7 @@ bool AnalyseurSyntaxique::instruction()
 			return instruction() && sinon();
 		}
 	}
-	//<instruction> –>repeter <instruction> jusque <expression>
+	//<instruction> â€“>repeter <instruction> jusque <expression>
 	else if (motCourantEgalAuMotCle("repeter")) {
 		motCourant = analyseurLexical->uniteSuivante();
 		if (instruction() && motCourantEgalAuMotCle("jusque")) {
@@ -152,7 +159,7 @@ bool AnalyseurSyntaxique::instruction()
 			return expression();
 		}
 	}
-	//<instruction> –>tantque <expression> faire <instruction>
+	//<instruction> â€“>tantque <expression> faire <instruction>
 	else if (motCourantEgalAuMotCle("tantque")) {
 		motCourant = analyseurLexical->uniteSuivante();
 		if (expression() && motCourantEgalAuMotCle("faire")) {
@@ -161,7 +168,7 @@ bool AnalyseurSyntaxique::instruction()
 			return instruction();
 		}
 	}
-	//<instruction> –>pour <identificateur> allantde <nb entier> a <nb entier> faire <instruction>
+	//<instruction> â€“>pour <identificateur> allantde <nb entier> a <nb entier> faire <instruction>
 	else if (motCourantEgalAuMotCle("pour")) {
 		motCourant = analyseurLexical->uniteSuivante();
 
@@ -179,7 +186,7 @@ bool AnalyseurSyntaxique::instruction()
 			}				
 		}
 	}
-	//<instruction> –>switch <identificateur> faire <cases>
+	//<instruction> â€“>switch <identificateur> faire <cases>
 	else if (motCourantEgalAuMotCle("switch")) {
 		motCourant = analyseurLexical->uniteSuivante();
 		if (identificateur() && motCourantEgalAuMotCle("faire")) {
@@ -188,7 +195,7 @@ bool AnalyseurSyntaxique::instruction()
 			return cases();
 		}
 	}
-	//<instruction> -> ecrire <liste d’arguments>
+	//<instruction> -> ecrire <liste dâ€™arguments>
 	else if (motCourantEgalAuMotCle("ecrire")) {
 		motCourant = analyseurLexical->uniteSuivante();
 
@@ -251,61 +258,176 @@ bool AnalyseurSyntaxique::expressionSimple()
 
 bool AnalyseurSyntaxique::expressionSimplePrime()
 {
+	//<expression simple prime> â€“> +<terme> <expression simple prime>
+	if (motCourant.UL == PLUS) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return terme() && expressionSimplePrime();
+	}
+	//<expression simple prime> â€“>- <terme> <expression simple prime>
+	else if (motCourant.UL == MOINS) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return terme() && expressionSimplePrime();
+	}
+	//<expression simple prime> â€“>|| <terme> <expression simple prime>
+	else if (motCourant.UL == OU) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return terme() && expressionSimplePrime();
+	}
 
+
+	//<expression simple prime> â€“>e
 	return false;
 }
 
 bool AnalyseurSyntaxique::terme()
 {
-	return false;
+	//<terme> â€“> <facteur> <terme prime>
+	return facteur() && termePrime();
 }
 
 bool AnalyseurSyntaxique::termePrime()
 {
+	//<terme prime> â€“> * <facteur> <terme prime>
+	if (motCourant.UL == MULTIP) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return facteur() && termePrime();
+	}
+	//<terme prime> â€“>/ <facteur> <terme prime>
+	else if (motCourant.UL == DIVISION) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return facteur() && termePrime();
+	}
+	//<terme prime> â€“>% <facteur> <terme prime>
+	else if (motCourant.UL == MODULO) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return facteur() && termePrime();
+
+	}
+	//<terme prime> â€“>&& <terme prime>
+	else if (motCourant.UL == ET) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return termePrime();
+	}
+	//<terme prime> â€“>e
 	return false;
 }
 
 bool AnalyseurSyntaxique::facteur()
 {
+	//<facteur> â€“> <nb entier>
+	if (nbEntier())
+		return true;
+	//<facteur> â€“> ( <expression simple> )
+	else if (motCourant.UL == PAROUV) {
+		motCourant = analyseurLexical->uniteSuivante();
+		if (expressionSimple()) {
+			if (motCourant.UL == PARFER) {
+				motCourant = analyseurLexical->uniteSuivante();
+				return true;
+			}
+			return false;
+		}
+	}
+	//<facteur> â€“> ! <facteur>
+	else if (motCourant.UL == DIFF) {
+		motCourant = analyseurLexical->uniteSuivante();
+		return facteur();
+	}
+	//<facteur> â€“><identificateur> <facteur prime>
+	else if (identificateur()) {
+		return facteurPrime();
+	}
 	return false;
 }
 
 bool AnalyseurSyntaxique::facteurPrime()
 {
+	//<facteur prime> â€“> [ <expression simple> ] <facteur seconde>
+	if (motCourant.UL == CROCHETOUV) {
+		motCourant = analyseurLexical->uniteSuivante();
+		if (expressionSimple()) {
+			if (motCourant.UL == CROCHETFER) {
+				motCourant = analyseurLexical->uniteSuivante();
+				return facteurSeconde();
+			}
+			
+		}
+	}
+	//<facteur prime> â€“>e
 	return false;
 }
 
 bool AnalyseurSyntaxique::facteurSeconde()
 {
-	return false;
+	if (motCourant.UL == CROCHETOUV)
+	{
+		motCourant = analyseurLexical->uniteSuivante();
+		if (expressionSimple() && motCourant.UL == CROCHETFER)
+		{
+			motCourant = analyseurLexical->uniteSuivante();
+
+			return true;
+		}
+	}
+	else
+
+
+		return false;
 }
 
 bool AnalyseurSyntaxique::listeDArgument()
 {
-	return false;
+	return expression() && listeDArgumentPrime();
 }
 
 bool AnalyseurSyntaxique::listeDArgumentPrime()
 {
-	return false;
+	if (motCourant.UL == VIR) {
+		return listeDArgument();
+	}
+
+	else
+
+		return false;
 }
 
 bool AnalyseurSyntaxique::comparaison()
 {
+	if (motCourant.UL == EGAL)
+	{
+		return motCourant.UL == EGAL;
+	}
+
+	else if (motCourant.UL == DIFF)
+	{
+		return true;
+	}
+	else if (motCourant.UL == INF)
+	{
+		return comparaisonPrime();
+	}
+	else if (motCourant.UL == SUP)
+	{
+		return comparaisonPrime();
+	}
+
 	return false;
 }
 
 bool AnalyseurSyntaxique::comparaisonPrime()
 {
-	return false;
+	if (motCourant.UL == EGAL)
+		return true;
+	else
+		return false;
 }
 
 bool AnalyseurSyntaxique::identificateur()
 {
-	return false;
+	return motCourant.UL == IDENT;
 }
 
 bool AnalyseurSyntaxique::nbEntier()
 {
-	return false;
+	return motCourant.UL == NBRENTIER;
 }

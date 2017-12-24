@@ -19,7 +19,7 @@ public:
 
 	/*Verifie si le motCourant correspond au mot cle passé en arguement */
 	bool motCourantEgalAuMotCle(string);
-	
+	void verifierSyntaxe();
 	bool programme();
 	bool listeDeDeclaration();
 	bool declaration();
