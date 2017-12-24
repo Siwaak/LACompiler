@@ -22,7 +22,10 @@ const map<string, int>AnalyseurLexical::tableMotCle = {
 														{ "jusque",14 },
 														{ "cas",15 },
 														{ "pour",16 },
-														{ "switch",17 }
+														{ "switch",17 },
+														{ "a",18},
+														{ "allantde",19}
+
 }; //liste des motsCle
 
 AnalyseurLexical::AnalyseurLexical(string fichier)
