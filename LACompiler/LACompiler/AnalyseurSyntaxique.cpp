@@ -50,10 +50,11 @@ bool AnalyseurSyntaxique::listeDeDeclaration()
 			return false;
 		}
 	}
-	else 
-		 //<liste de declarations> –>e
-		//il faut vérifier si le mot courant appartient à suivant de listeDeDeclaration
-		return false;
+	else if (suivantListeDeDeclaration(motCourant))
+		//<liste de declarations> –>e
+		return true;
+
+	return false;
 	
 }
 
@@ -103,9 +104,9 @@ bool AnalyseurSyntaxique::declarationPrime()
 			return true;
 		}
 	}
-	else
+	else if (suivantDeclarationPrime(motCourant))
 		//<declaration prime> –>e
-		//on vérifie si le mot courant appartient au suivant de declarationPrime
+		return true;
 
 	return false;
 }
@@ -122,9 +123,9 @@ bool AnalyseurSyntaxique::listeDIstruction()
 			return false;
 		}
 	}
-	else
+	else if (suivantListeDIstruction(motCourant))
 		//<liste d’instructions>  –>e
-		//il faut vérifier si le mot courant appartient à suivant de listeDInstruction
+		return true;
 	return false;
 }
 
@@ -160,25 +161,31 @@ bool AnalyseurSyntaxique::instruction()
 		}
 	}
 	//<instruction> –>tantque <expression> faire <instruction>
-	else if (motCourantEgalAuMotCle("tantque")) {
+	else if (motCourantEgalAuMotCle("tantque")) 
+	{
 		motCourant = analyseurLexical->uniteSuivante();
-		if (expression() && motCourantEgalAuMotCle("faire")) {
+		if (expression() && motCourantEgalAuMotCle("faire")) 
+		{
 			motCourant = analyseurLexical->uniteSuivante();
 
 			return instruction();
 		}
 	}
 	//<instruction> –>pour <identificateur> allantde <nb entier> a <nb entier> faire <instruction>
-	else if (motCourantEgalAuMotCle("pour")) {
+	else if (motCourantEgalAuMotCle("pour")) 
+	{
 		motCourant = analyseurLexical->uniteSuivante();
 
-		if (identificateur() && motCourantEgalAuMotCle("allantde")) {
+		if (identificateur() && motCourantEgalAuMotCle("allantde"))
+		{
 			motCourant = analyseurLexical->uniteSuivante();
 
-			if (nbEntier() && motCourantEgalAuMotCle("a")) {
+			if (nbEntier() && motCourantEgalAuMotCle("a"))
+			{
 				motCourant = analyseurLexical->uniteSuivante();
 
-				if (nbEntier() && motCourantEgalAuMotCle("faire")) {
+				if (nbEntier() && motCourantEgalAuMotCle("faire"))
+				{
 					motCourant = analyseurLexical->uniteSuivante();
 					
 					return instruction();
@@ -187,33 +194,39 @@ bool AnalyseurSyntaxique::instruction()
 		}
 	}
 	//<instruction> –>switch <identificateur> faire <cases>
-	else if (motCourantEgalAuMotCle("switch")) {
+	else if (motCourantEgalAuMotCle("switch"))
+	{
 		motCourant = analyseurLexical->uniteSuivante();
-		if (identificateur() && motCourantEgalAuMotCle("faire")) {
+		if (identificateur() && motCourantEgalAuMotCle("faire")) 
+		{
 			motCourant = analyseurLexical->uniteSuivante();
 
 			return cases();
 		}
 	}
 	//<instruction> -> ecrire <liste d’arguments>
-	else if (motCourantEgalAuMotCle("ecrire")) {
+	else if (motCourantEgalAuMotCle("ecrire")) 
+	{
 		motCourant = analyseurLexical->uniteSuivante();
 
 			return listeDArgument();		
 	}
 	//<instruction> -> lire <identificateur>
-	else if (motCourantEgalAuMotCle("lire")) {
+	else if (motCourantEgalAuMotCle("lire"))
+	{
 		motCourant = analyseurLexical->uniteSuivante();
 
 		return identificateur();
 	}
 	//<instruction> -> <expression>
-	else if (expression()) {
+	else if (expression()) 
+	{
 
 		return true;
 	}
 	//<instruction> -> <identificateur> <instruction prime>
-	else if (identificateur()) {
+	else if (identificateur())
+	{
 
 		return instructionPrime();
 	}
@@ -296,8 +309,9 @@ bool AnalyseurSyntaxique::sinon()
 		}
 		return false;
 	}
-	else
+	else if (suivantSinon(motCourant))
 		/**EPSILON*/
+		return true;
 		return false;
 }
 
@@ -327,9 +341,11 @@ bool AnalyseurSyntaxique::cases()
 			}
 		}
 	}
-	else
+	else if (suivantCases(motCourant))
 		/**EPSILON*/
-		return false;
+		return true;
+
+	return false;
 }
 
 bool AnalyseurSyntaxique::expression()
@@ -355,9 +371,11 @@ bool AnalyseurSyntaxique::expressionPrime()
 		}
 		return false;
 	}
-	else
+	else if (suivantExpressionPrime(motCourant))
 		/**EPSILON*/
-		return false;
+		return	true;
+
+	return false;
 }
 
 bool AnalyseurSyntaxique::expressionSimple()
@@ -403,8 +421,10 @@ bool AnalyseurSyntaxique::expressionSimplePrime()
 		return terme() && expressionSimplePrime();
 	}
 
+	else if (suivantExpressionSimplePrime(motCourant))
 
-	//<expression simple prime> –>e
+		//<expression simple prime> –>e
+		return true;
 	return false;
 }
 
@@ -438,6 +458,8 @@ bool AnalyseurSyntaxique::termePrime()
 		return termePrime();
 	}
 	//<terme prime> –>e
+	else if (suivantTermePrime(motCourant))
+		return true;
 	return false;
 }
 
@@ -479,10 +501,12 @@ bool AnalyseurSyntaxique::facteurPrime()
 				motCourant = analyseurLexical->uniteSuivante();
 				return facteurSeconde();
 			}
-			
+
 		}
 	}
 	//<facteur prime> –>e
+	else if (suivantFacteurPrime(motCourant))
+		return true;
 	return false;
 }
 
@@ -561,7 +585,187 @@ bool AnalyseurSyntaxique::nbEntier()
 	return motCourant.UL == NBRENTIER;
 }
 
+bool AnalyseurSyntaxique::suivantListeDeDeclaration(TLexeme)
+{
+	return false;
+}
+
 bool AnalyseurSyntaxique::suivantDeclarationPrime(TLexeme lex)
 { 
 	return lex.UL == POINTVIR;
+}
+
+bool AnalyseurSyntaxique::suivantListeDIstruction(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantSinon(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantCases(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantExpressionPrime(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantExpressionSimplePrime(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantTermePrime(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantFacteurPrime(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantFacteurSeconde(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantListeDArgumentPrime(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::suivantComparaisonPrime(TLexeme)
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierProgramme()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierListeDeDeclaration()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierDeclaration()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierDeclarationPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierListeDIstruction()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierInstruction()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierInstructionPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierInstructionSeconde()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierSinon()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierCases()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpression()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpressionPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpressionSimple()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpressionSimplePrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierTerme()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierTermePrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierFacteur()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierFacteurPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierFacteurSeconde()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierListeDArgument()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierListeDArgumentPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierComparaison()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierComparaisonPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierIdentificateur()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierNbEntier()
+{
+	return false;
 }

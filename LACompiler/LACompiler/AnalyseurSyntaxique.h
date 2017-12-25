@@ -61,7 +61,34 @@ public:
 	bool suivantFacteurSeconde(TLexeme);
 	bool suivantListeDArgumentPrime(TLexeme);
 	bool suivantComparaisonPrime(TLexeme);
-	
+
+
+	/*Les premiers*/
+	bool premierProgramme();
+	bool premierListeDeDeclaration();
+	bool premierDeclaration();
+	bool premierDeclarationPrime();
+	bool premierListeDIstruction();
+	bool premierInstruction();
+	bool premierInstructionPrime();
+	bool premierInstructionSeconde();
+	bool premierSinon();
+	bool premierCases();
+	bool premierExpression();
+	bool premierExpressionPrime();
+	bool premierExpressionSimple();
+	bool premierExpressionSimplePrime();
+	bool premierTerme();
+	bool premierTermePrime();
+	bool premierFacteur();
+	bool premierFacteurPrime();
+	bool premierFacteurSeconde();
+	bool premierListeDArgument();
+	bool premierListeDArgumentPrime();
+	bool premierComparaison();
+	bool premierComparaisonPrime();
+	bool premierIdentificateur();
+	bool premierNbEntier();
 
 	
 };
