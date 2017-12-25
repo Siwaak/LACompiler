@@ -5,7 +5,7 @@
 
 using namespace std;
 
-const map<string, int>AnalyseurLexical::tableMotCle = {
+ map<string, int>AnalyseurLexical::tableMotCle = {
 														{ "debut",1 },
 														{ "fin",2 },
 														{ "entier",3 },

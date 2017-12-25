@@ -1,0 +1,12 @@
+{
+  "DataCollection": [
+    {
+      "Id": "d65a26a3-c51c-4ca2-9bba-d4cb42724e65",
+      "Command": "test.txt"
+    },
+    {
+      "Id": "f4b15414-e921-4ab3-a3e7-cb2e5a1b00b4",
+      "Command": ""
+    }
+  ]
+}

@@ -22,7 +22,7 @@ class AnalyseurLexical
 public:
 	AnalyseurLexical(string);
 	~AnalyseurLexical();
-	static const map<string, int> tableMotCle;
+	static  map<string, int> tableMotCle;
 
 	long hashCode(string); //calcul un entier (index dans un talbeau) à partire d'une chaine
 
