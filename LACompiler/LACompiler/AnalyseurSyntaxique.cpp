@@ -1,8 +1,9 @@
 ﻿#include "stdafx.h"
 #include "AnalyseurSyntaxique.h"
 #include"ErreurSyntaxique.h"
+#include <string>
+#include <string.h>
 
-ErreurSyntaxique lesErreurs;
 
 AnalyseurSyntaxique::AnalyseurSyntaxique(string fichier)
 {
@@ -37,7 +38,10 @@ void AnalyseurSyntaxique::prochainMot()
 		motCourant = analyseurLexical->uniteSuivante();
 
 		if (motCourant.UL == ERR1 || motCourant.UL == ERR2 || motCourant.UL == ERR3 || motCourant.UL == ERR4)
-			cout << motCourant.UL << endl;
+		{
+			cout << to_string(analyseurLexical->getLigne())<< " "<< motCourant.UL << endl;
+			
+		}
 	} while (motCourant.UL == ERR1 || motCourant.UL == ERR2 || motCourant.UL == ERR3 || motCourant.UL == ERR4);
 
 }
@@ -53,12 +57,17 @@ bool AnalyseurSyntaxique::programme()
 			{
 				if (motCourantEgalAuMotCle("fin"))
 				{
-					prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+					prochainMot();
+					while (motCourant.UL!=ERR5)
+					{
+						lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mots trouves apres fin de programme");
+						prochainMot();
+					}
 					return true;
 				}
 				else
 				{
-					lesErreurs.ajouterErreur("mot <fin> attendu");
+					lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <fin> attendu");
 					return true;
 				}
 			}
@@ -66,7 +75,7 @@ bool AnalyseurSyntaxique::programme()
 	}
 	else
 	{
-		lesErreurs.ajouterErreur("mot <debut> attendu");
+		lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <debut> attendu");
 		return true;
 	}
 }
@@ -78,13 +87,15 @@ bool AnalyseurSyntaxique::listeDeDeclaration()
 	{
 		if (motCourant.UL == POINTVIR)
 		{
+			cout << analyseurLexical->getLigne() <<"pt vir" << endl;
+
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 			if (listeDeDeclaration())
 				return true;
 		}
 		else
 		{
-			lesErreurs.ajouterErreur("symbole <;> attendu");
+			lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <;> attendu");
 				return true;
 		}
 	}
@@ -129,27 +140,27 @@ bool AnalyseurSyntaxique::declaration()
 						}
 						else
 						{
-							lesErreurs.ajouterErreur("symbole <]> attendu");
+							lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
 							return true;
 						}
 					}
 				}
 				else
 				{
-					lesErreurs.ajouterErreur("symbole <[> attendu");
+					lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <[> attendu");
 						return true;
 				}
 			}
 		}
 		else
 		{
-			lesErreurs.ajouterErreur("mot <entier> attendu");
+			lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <entier> attendu");
 				return true;
 		}
 	}
 	else
 	{
-		lesErreurs.ajouterErreur("mot <tableau> ou mot <entier> attendu");
+		lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <tableau> ou mot <entier> attendu");
 			return true;
 	}
 	//Il y a une erreur
@@ -171,7 +182,7 @@ bool AnalyseurSyntaxique::declarationPrime()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("symbole <]> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
 				return true;
 			}
 		}
@@ -196,14 +207,13 @@ bool AnalyseurSyntaxique::listeDIstruction()
 		}
 		else
 		{
-			lesErreurs.ajouterErreur("symbole <;> attendu");
+			lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <;> attendu");
 			return true;
 		}
 	}
 	else if (suivantListeDInstruction())
 		//<liste d’instructions>  –>e
 		return true;
-	return false;
 }
 
 bool AnalyseurSyntaxique::instruction()
@@ -222,7 +232,7 @@ bool AnalyseurSyntaxique::instruction()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("mot <fin> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <fin> attendu");
 				return true;
 			}
 		}
@@ -253,7 +263,7 @@ bool AnalyseurSyntaxique::instruction()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("mot <alors> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <alors> attendu");
 				return true;
 			}
 
@@ -276,7 +286,7 @@ bool AnalyseurSyntaxique::instruction()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("mot <jusque> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <jusque> attendu");
 				return true;
 			}
 		}
@@ -298,7 +308,7 @@ bool AnalyseurSyntaxique::instruction()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("mot <faire> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <faire> attendu");
 				return true;
 			}
 		}	
@@ -332,14 +342,14 @@ bool AnalyseurSyntaxique::instruction()
 							}
 							else
 							{
-								lesErreurs.ajouterErreur("mot <faire> attendu");
+								lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <faire> attendu");
 								return true;
 							}
 						}	
 					}
 					else
 					{
-						lesErreurs.ajouterErreur("lettre <a> attendu");
+						lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": lettre <a> attendu");
 						return true;
 					}
 				}
@@ -347,7 +357,7 @@ bool AnalyseurSyntaxique::instruction()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("mot <allantde> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <allantde> attendu");
 				return true;
 			}
 		}
@@ -370,7 +380,7 @@ bool AnalyseurSyntaxique::instruction()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("mot <faire> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <faire> attendu");
 				return true;
 			}
 		}
@@ -437,7 +447,7 @@ bool AnalyseurSyntaxique::instructionPrime()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("symbole <]> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
 				return true;
 			}
 		}
@@ -476,13 +486,13 @@ bool AnalyseurSyntaxique::instructionSeconde()
 				}
 				else
 				{
-					lesErreurs.ajouterErreur("symbole <==> attendu");
+					lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <==> attendu");
 					return true;
 				}
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("symbole <]> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
 				return true;
 			}
 		}
@@ -530,14 +540,14 @@ bool AnalyseurSyntaxique::cases()
 					}
 					else
 					{
-						lesErreurs.ajouterErreur("mot <arret> attendu");
+						lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <arret> attendu");
 						return true;
 					}
 				}
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("symbole <:> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <:> attendu");
 				return true;
 			}
 		}
@@ -726,7 +736,7 @@ bool AnalyseurSyntaxique::facteur()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("symbole <)> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <)> attendu");
 				return true;
 			}
 			return false;
@@ -765,7 +775,7 @@ bool AnalyseurSyntaxique::facteurPrime()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("symbole <]> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
 				return true;
 			}
 		}
@@ -792,7 +802,7 @@ bool AnalyseurSyntaxique::facteurSeconde()
 			}
 			else
 			{
-				lesErreurs.ajouterErreur("symbole <]> attendu");
+				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
 				return true;
 			}
 		}
@@ -877,8 +887,7 @@ bool AnalyseurSyntaxique::identificateur()
 	}
 	else
 	{
-		lesErreurs.ajouterErreur("syntaxe de l'identifiant non reconnue");
-		return true;
+		return false;
 	}
 }
 
@@ -891,8 +900,7 @@ bool AnalyseurSyntaxique::nbEntier()
 	}
 	else
 	{
-		lesErreurs.ajouterErreur("syntaxe du nombre entier non reconnue");
-		return true;
+		return false;
 	}
 }
 
@@ -1048,4 +1056,155 @@ bool AnalyseurSyntaxique::suivantListeDArgumentPrime()
 		|| motCourantEgalAuMotCle("arret")
 		|| motCourantEgalAuMotCle("sinon")
 		|| motCourant.UL == POINTVIR;
+}
+
+bool AnalyseurSyntaxique::premierProgramme()
+{
+	return motCourantEgalAuMotCle("debut");
+}
+
+bool AnalyseurSyntaxique::premierListeDeDeclaration()
+{
+	return motCourantEgalAuMotCle("entier")
+		|| motCourantEgalAuMotCle("tableau")
+		|| suivantListeDeDeclaration();
+}
+
+bool AnalyseurSyntaxique::premierDeclaration()
+{
+	return motCourantEgalAuMotCle("entier")
+		|| motCourantEgalAuMotCle("tableau");
+}
+
+bool AnalyseurSyntaxique::premierDeclarationPrime()
+{
+	return motCourant.UL == CROCHETOUV
+		|| suivantDeclarationPrime();
+}
+
+bool AnalyseurSyntaxique::premierListeDIstruction()
+{
+	return motCourantEgalAuMotCle("debut")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("si")
+		|| motCourantEgalAuMotCle("repeter")
+		|| motCourantEgalAuMotCle("tantque")
+		|| motCourantEgalAuMotCle("pour")
+		|| motCourantEgalAuMotCle("switch")
+		|| motCourantEgalAuMotCle("ecrire")
+		|| motCourantEgalAuMotCle("lire")
+		|| motCourant.UL == MOINS
+		|| motCourant.UL == IDENT
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER
+		|| suivantListeDInstruction();
+}
+
+bool AnalyseurSyntaxique::premierInstruction()
+{
+	return motCourantEgalAuMotCle("debut")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("si")
+		|| motCourantEgalAuMotCle("repeter")
+		|| motCourantEgalAuMotCle("tantque")
+		|| motCourantEgalAuMotCle("pour")
+		|| motCourantEgalAuMotCle("switch")
+		|| motCourantEgalAuMotCle("ecrire")
+		|| motCourantEgalAuMotCle("lire")
+		|| motCourant.UL == MOINS
+		|| motCourant.UL == IDENT
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER;
+}
+
+bool AnalyseurSyntaxique::premierInstructionPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierInstructionSeconde()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierSinon()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierCases()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpression()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpressionPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpressionSimple()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierExpressionSimplePrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierTerme()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierTermePrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierFacteur()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierFacteurPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierFacteurSeconde()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierListeDArgument()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierListeDArgumentPrime()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierComparaison()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierIdentificateur()
+{
+	return false;
+}
+
+bool AnalyseurSyntaxique::premierNbEntier()
+{
+	return false;
 }

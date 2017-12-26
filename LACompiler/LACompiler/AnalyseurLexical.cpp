@@ -30,10 +30,10 @@ using namespace std;
 
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
-	code = "";// initialisation du code;
-
+	//code = "debut 		entier x;	debut		i = 1;	i allantde 1 a 5 faire		debut		lire i		fin;	fin;	fin		DQFDS";// initialisation du code;
+	code = "";
 	c = ' ';//Initialisation du caractère par un esapce
-
+	ligne = 1;
 	ifstream lecteurFichier;
 	lecteurFichier.open(fichier.c_str());
 
@@ -75,7 +75,11 @@ long AnalyseurLexical::hashCode(string chaine)
 
 bool AnalyseurLexical::estBlanc(char caractere)
 {
-	return caractere == ' ' || caractere == '\t' || caractere == '\n';
+	if (caractere == '\n') {
+		ligne++;
+		return true;
+	}
+	return caractere == ' ' || caractere == '\t';
 }
 
 void AnalyseurLexical::lireCaractere()
@@ -256,6 +260,12 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		lex.attribut = -1;
 		lireCaractere();
 		break;
+
+	case EOF:
+		lex.UL = ERR5;
+		lex.attribut = -1;
+		lireCaractere();
+		break;
 	default:
 		if (estLettre(c)) {
 			lexeme = c;
@@ -293,6 +303,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		}
 		else
 		{
+			//cout << c << endl;
 			lex.UL = ERR3;
 			lex.attribut = -1;
 			lireCaractere();

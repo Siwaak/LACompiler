@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <iostream>
-#include "AnalyseurLexical.h";
+#include "AnalyseurLexical.h"
+#include "ErreurSyntaxique.h";
 
 using namespace std;
 
@@ -21,6 +22,8 @@ public:
 	bool motCourantEgalAuMotCle(string);
 	void verifierSyntaxe();
 	void prochainMot();
+	//Les erreurs
+	ErreurSyntaxique lesErreurs;
 	/**Non terminaux*/
 	bool programme();
 	bool listeDeDeclaration();
@@ -60,5 +63,31 @@ public:
 	bool suivantFacteurSeconde();
 	bool suivantListeDArgumentPrime();
 	
+	/*Premiers*/
+	bool premierProgramme();
+	bool premierListeDeDeclaration();
+	bool premierDeclaration();
+	bool premierDeclarationPrime();
+	bool premierListeDIstruction();
+	bool premierInstruction();
+	bool premierInstructionPrime();
+	bool premierInstructionSeconde();
+	bool premierSinon();
+	bool premierCases();
+	bool premierExpression();
+	bool premierExpressionPrime();
+	bool premierExpressionSimple();
+	bool premierExpressionSimplePrime();
+	bool premierTerme();
+	bool premierTermePrime();
+	bool premierFacteur();
+	bool premierFacteurPrime();
+	bool premierFacteurSeconde();
+	bool premierListeDArgument();
+	bool premierListeDArgumentPrime();
+	bool premierComparaison();
+	bool premierIdentificateur();
+	bool premierNbEntier();
+
 };
 

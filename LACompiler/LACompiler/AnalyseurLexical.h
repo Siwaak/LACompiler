@@ -15,7 +15,7 @@ class AnalyseurLexical
 	string code; //contient le script à traduire
 	string lexeme;//stockera la valeur s'il s'agit d'un identificateur, d'un mot clé ou d'une constante
 	char c;//Caractere lu
-
+	int ligne; //le numero de la ligne dans le script
 	map<long, string> tableIdent; //liste des identificateurs;
 
 	
@@ -23,7 +23,10 @@ public:
 	AnalyseurLexical(string);
 	~AnalyseurLexical();
 	static  map<string, int> tableMotCle;
-
+	int getLigne()
+	{
+		return ligne;
+	}
 	long hashCode(string); //calcul un entier (index dans un talbeau) à partire d'une chaine
 
 	bool estBlanc(char);//Vérifie si un caractère est blanc

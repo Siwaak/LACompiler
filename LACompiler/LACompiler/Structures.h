@@ -11,7 +11,7 @@ using namespace std;
 typedef enum {
 	MOTCLE, IDENT, VIR, POINTVIR, AFFEC, EGAL, DIFF, INF, INFEG, SUP, SUPEG, PLUS, MOINS,
 	MULTIP, DIVISION, MODULO, NEGATION, ET, OU, PAROUV, PARFER,
-	CROCHETOUV, CROCHETFER, NBRENTIER, COMMENTAIRE, DXPOINT, ERR1, ERR2, ERR3, ERR4
+	CROCHETOUV, CROCHETFER, NBRENTIER, COMMENTAIRE, DXPOINT, ERR1, ERR2, ERR3, ERR4, ERR5
 }UniteLexical;// Types des unités lexicales
 			  // ERR1 : & attendu, ERR2: | attendu, ERR3: caractere inattendu, ERR4 commentaire non fermé
 
@@ -122,19 +122,23 @@ inline ostream& operator<<(ostream& out, const UniteLexical ul) {
 		break;
 		
 	case ERR1:
-		chaineUl = "ERR1";
+		chaineUl = "ERR1: & attendu";
 
 		break;
 	case ERR2:
-		chaineUl = "ERR2";
+		chaineUl = "ERR2: | attendu";
 		break;
 	
 	case ERR3:
-		chaineUl = "ERR3";
+		chaineUl = "ERR3: Le carractere n'appartient pas a l'alphabet";
 		break;
 
 	case ERR4:
-		chaineUl = "ERR4";
+		chaineUl = "ERR4: commentaire non ferme";
+		break;
+
+	case ERR5:
+		chaineUl = "ERR5: Fin de fichier";
 		break;
 	default :
 		break;
