@@ -295,6 +295,7 @@ TLexeme AnalyseurLexical::uniteSuivante()
 		{
 			lex.UL = ERR3;
 			lex.attribut = -1;
+			lireCaractere();
 		}
 
 		break;

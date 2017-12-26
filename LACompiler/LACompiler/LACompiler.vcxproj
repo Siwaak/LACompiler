@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="AnalyseurLexical.h" />
     <ClInclude Include="AnalyseurSyntaxique.h" />
+    <ClInclude Include="ErreurSyntaxique.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Structures.h" />
     <ClInclude Include="targetver.h" />
@@ -152,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="AnalyseurLexical.cpp" />
     <ClCompile Include="AnalyseurSyntaxique.cpp" />
+    <ClCompile Include="ErreurSyntaxique.cpp" />
     <ClCompile Include="LACompiler.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

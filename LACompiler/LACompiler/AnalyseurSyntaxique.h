@@ -44,7 +44,6 @@ public:
 	bool listeDArgument();
 	bool listeDArgumentPrime();
 	bool comparaison();
-	bool comparaisonPrime();
 	bool identificateur();
 	bool nbEntier();
 
@@ -60,36 +59,6 @@ public:
 	bool suivantFacteurPrime();
 	bool suivantFacteurSeconde();
 	bool suivantListeDArgumentPrime();
-	bool suivantComparaisonPrime();
-
-
-	/*Les premiers*/
-	bool premierProgramme();
-	bool premierListeDeDeclaration();
-	bool premierDeclaration();
-	bool premierDeclarationPrime();
-	bool premierListeDIstruction();
-	bool premierInstruction();
-	bool premierInstructionPrime();
-	bool premierInstructionSeconde();
-	bool premierSinon();
-	bool premierCases();
-	bool premierExpression();
-	bool premierExpressionPrime();
-	bool premierExpressionSimple();
-	bool premierExpressionSimplePrime();
-	bool premierTerme();
-	bool premierTermePrime();
-	bool premierFacteur();
-	bool premierFacteurPrime();
-	bool premierFacteurSeconde();
-	bool premierListeDArgument();
-	bool premierListeDArgumentPrime();
-	bool premierComparaison();
-	bool premierComparaisonPrime();
-	bool premierIdentificateur();
-	bool premierNbEntier();
-
 	
 };
 

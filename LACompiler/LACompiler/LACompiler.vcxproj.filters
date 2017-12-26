@@ -30,6 +30,9 @@
     <ClInclude Include="AnalyseurSyntaxique.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="ErreurSyntaxique.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +45,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="AnalyseurSyntaxique.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ErreurSyntaxique.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
