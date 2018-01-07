@@ -31,26 +31,26 @@ using namespace std;
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
 	//code = "debut 		entier x;	debut		i = 1;	i allantde 1 a 5 faire		debut		lire i		fin;	fin;	fin		DQFDS";// initialisation du code;
-	code = "";
+	code = "debut 		entier x; entier i; tableau entier T[13];	debut	{ lecture du tableau T }	i = 1;	tantque i <= 13 faire		debut		lire i		fin		fin 		fin";
 	c = ' ';//Initialisation du caractère par un esapce
 	ligne = 1;
-	ifstream lecteurFichier;
-	lecteurFichier.open(fichier.c_str());
+	//ifstream lecteurFichier;
+	//lecteurFichier.open(fichier.c_str());
 
-	// Vérification de l'ouverture du fichier
-	if (!lecteurFichier.is_open()) {
-		cout << "Impossible d'ouvrire le fichier!" << endl;
-		exit(EXIT_FAILURE);
-	}
-	string ligne;
+	//// Vérification de l'ouverture du fichier
+	//if (!lecteurFichier.is_open()) {
+	//	cout << "Impossible d'ouvrire le fichier!" << endl;
+	//	exit(EXIT_FAILURE);
+	//}
+	//string ligne;
 
-	// Copie du contenue du fichier dans la variable code
-	while (getline(lecteurFichier, ligne)) {
-		code += ligne + '\n';
-	}
+	//// Copie du contenue du fichier dans la variable code
+	//while (getline(lecteurFichier, ligne)) {
+	//	code += ligne + '\n';
+	//}
 
-	// Fermeture du fichier
-	lecteurFichier.close();
+	//// Fermeture du fichier
+	//lecteurFichier.close();
 }
 
 

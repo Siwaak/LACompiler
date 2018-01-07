@@ -903,7 +903,10 @@ bool AnalyseurSyntaxique::nbEntier()
 		return false;
 	}
 }
-
+bool AnalyseurSyntaxique::suivantProgramme()
+{
+	return false;
+}
 bool AnalyseurSyntaxique::suivantListeDeDeclaration()
 {
 	return motCourantEgalAuMotCle("debut")
@@ -917,11 +920,15 @@ bool AnalyseurSyntaxique::suivantListeDeDeclaration()
 		|| motCourantEgalAuMotCle("lire")
 		|| motCourant.UL == MOINS
 		|| motCourant.UL == IDENT
-		|| motCourant.UL == DIFF
+		|| motCourant.UL == NEGATION
 		|| motCourant.UL == PAROUV
 		|| motCourant.UL == NBRENTIER;
 }
 
+bool AnalyseurSyntaxique::suivantDeclaration()
+{
+	return motCourant.UL == POINTVIR;
+}
 
 bool AnalyseurSyntaxique::suivantDeclarationPrime()
 {
@@ -931,6 +938,30 @@ bool AnalyseurSyntaxique::suivantDeclarationPrime()
 bool AnalyseurSyntaxique::suivantListeDInstruction()
 {
 	return motCourantEgalAuMotCle("fin");
+}
+
+bool AnalyseurSyntaxique::suivantInstruction()
+{
+	return motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourant.UL == POINTVIR;
+}
+
+bool AnalyseurSyntaxique::suivantInstructionPrime()
+{
+	return motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourant.UL == POINTVIR;
+}
+
+bool AnalyseurSyntaxique::suivantInstructionSeconde()
+{
+	return motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourant.UL == POINTVIR;
 }
 
 bool AnalyseurSyntaxique::suivantSinon()
@@ -949,6 +980,17 @@ bool AnalyseurSyntaxique::suivantCases()
 		|| motCourant.UL == POINTVIR;
 }
 
+bool AnalyseurSyntaxique::suivantExpression()
+{
+	return motCourantEgalAuMotCle("alors")
+		|| motCourantEgalAuMotCle("faire")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourant.UL == VIR
+		|| motCourant.UL == POINTVIR;
+}
+
 bool AnalyseurSyntaxique::suivantExpressionPrime()
 {
 	return motCourantEgalAuMotCle("alors")
@@ -960,6 +1002,24 @@ bool AnalyseurSyntaxique::suivantExpressionPrime()
 		|| motCourant.UL == POINTVIR;
 }
 
+bool AnalyseurSyntaxique::suivantExpressionSimple()
+{
+	return motCourantEgalAuMotCle("alors")
+		|| motCourantEgalAuMotCle("faire")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourant.UL == CROCHETFER
+		|| motCourant.UL == EGAL
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == INFEG
+		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
+		|| motCourant.UL == PARFER
+		|| motCourant.UL == VIR
+		|| motCourant.UL == POINTVIR;
+}
 
 bool AnalyseurSyntaxique::suivantExpressionSimplePrime()
 {
@@ -969,15 +1029,38 @@ bool AnalyseurSyntaxique::suivantExpressionSimplePrime()
 		|| motCourantEgalAuMotCle("jusque")
 		|| motCourantEgalAuMotCle("arret")
 		|| motCourant.UL == CROCHETFER
-		|| motCourant.UL == AFFEC
+		|| motCourant.UL == EGAL
 		|| motCourant.UL == DIFF
 		|| motCourant.UL == INFEG
 		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
 		|| motCourant.UL == PARFER
 		|| motCourant.UL == VIR
 		|| motCourant.UL == POINTVIR;
 }
 
+bool AnalyseurSyntaxique::suivantTerme()
+{
+	return motCourantEgalAuMotCle("alors")
+		|| motCourantEgalAuMotCle("faire")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourant.UL == PLUS
+		|| motCourant.UL == MOINS
+		|| motCourant.UL == OU
+		|| motCourant.UL == CROCHETFER
+		|| motCourant.UL == EGAL
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == INFEG
+		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
+		|| motCourant.UL == PARFER
+		|| motCourant.UL == VIR
+		|| motCourant.UL == POINTVIR;
+}
 
 bool AnalyseurSyntaxique::suivantTermePrime()
 {
@@ -990,16 +1073,42 @@ bool AnalyseurSyntaxique::suivantTermePrime()
 		|| motCourant.UL == MOINS
 		|| motCourant.UL == OU
 		|| motCourant.UL == CROCHETFER
-		|| motCourant.UL == AFFEC
+		|| motCourant.UL == EGAL
 		|| motCourant.UL == DIFF
 		|| motCourant.UL == INFEG
 		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
 		|| motCourant.UL == PARFER
 		|| motCourant.UL == VIR
 		|| motCourant.UL == POINTVIR;
 }
 
-
+bool AnalyseurSyntaxique::suivantFacteur()
+{
+	return motCourantEgalAuMotCle("alors")
+		|| motCourantEgalAuMotCle("faire")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourant.UL == MULTIP
+		|| motCourant.UL == DIVISION
+		|| motCourant.UL == MODULO
+		|| motCourant.UL == ET
+		|| motCourant.UL == PLUS
+		|| motCourant.UL == MOINS
+		|| motCourant.UL == OU
+		|| motCourant.UL == CROCHETFER
+		|| motCourant.UL == EGAL
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == INFEG
+		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
+		|| motCourant.UL == PARFER
+		|| motCourant.UL == VIR
+		|| motCourant.UL == POINTVIR;
+}
 
 bool AnalyseurSyntaxique::suivantFacteurPrime()
 {
@@ -1016,10 +1125,12 @@ bool AnalyseurSyntaxique::suivantFacteurPrime()
 		|| motCourant.UL == MOINS
 		|| motCourant.UL == OU
 		|| motCourant.UL == CROCHETFER
-		|| motCourant.UL == AFFEC
+		|| motCourant.UL == EGAL
 		|| motCourant.UL == DIFF
 		|| motCourant.UL == INFEG
 		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
 		|| motCourant.UL == PARFER
 		|| motCourant.UL == VIR
 		|| motCourant.UL == POINTVIR;
@@ -1041,12 +1152,22 @@ bool AnalyseurSyntaxique::suivantFacteurSeconde()
 		|| motCourant.UL == MOINS
 		|| motCourant.UL == OU
 		|| motCourant.UL == CROCHETFER
-		|| motCourant.UL == AFFEC
+		|| motCourant.UL == EGAL
 		|| motCourant.UL == DIFF
 		|| motCourant.UL == INFEG
 		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
 		|| motCourant.UL == PARFER
 		|| motCourant.UL == VIR
+		|| motCourant.UL == POINTVIR;
+}
+
+bool AnalyseurSyntaxique::suivantListeDArgument()
+{
+	return motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("sinon")
 		|| motCourant.UL == POINTVIR;
 }
 
@@ -1055,6 +1176,73 @@ bool AnalyseurSyntaxique::suivantListeDArgumentPrime()
 	return motCourantEgalAuMotCle("jusque")
 		|| motCourantEgalAuMotCle("arret")
 		|| motCourantEgalAuMotCle("sinon")
+		|| motCourant.UL == POINTVIR;
+}
+
+bool AnalyseurSyntaxique::suivantComparaison()
+{
+	return motCourant.UL == MOINS
+		|| motCourant.UL == IDENT
+		|| motCourant.UL == NEGATION
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER;
+}
+
+bool AnalyseurSyntaxique::suivantIdentificateur()
+{
+	return motCourantEgalAuMotCle("alors")
+		|| motCourantEgalAuMotCle("faire")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("allantde")
+		|| motCourant.UL == CROCHETOUV
+		|| motCourant.UL == AFFEC
+		|| motCourant.UL == MULTIP
+		|| motCourant.UL == DIVISION
+		|| motCourant.UL == MODULO
+		|| motCourant.UL == ET
+		|| motCourant.UL == PLUS
+		|| motCourant.UL == MOINS
+		|| motCourant.UL == OU
+		|| motCourant.UL == CROCHETFER
+		|| motCourant.UL == EGAL
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == INFEG
+		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
+		|| motCourant.UL == PARFER
+		|| motCourant.UL == VIR
+		|| motCourant.UL == POINTVIR;
+}
+
+bool AnalyseurSyntaxique::suivantNbEntier()
+{
+	return motCourantEgalAuMotCle("alors")
+		|| motCourantEgalAuMotCle("faire")
+		|| motCourantEgalAuMotCle("sinon")
+		|| motCourantEgalAuMotCle("jusque")
+		|| motCourantEgalAuMotCle("arret")
+		|| motCourantEgalAuMotCle("allantde")
+		|| motCourant.UL == CROCHETOUV
+		|| motCourant.UL == AFFEC
+		|| motCourant.UL == MULTIP
+		|| motCourant.UL == DIVISION
+		|| motCourant.UL == MODULO
+		|| motCourant.UL == ET
+		|| motCourant.UL == PLUS
+		|| motCourant.UL == MOINS
+		|| motCourant.UL == OU
+		|| motCourant.UL == CROCHETFER
+		|| motCourant.UL == EGAL
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == INFEG
+		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
+		|| motCourant.UL == PARFER
+		|| motCourant.UL == VIR
 		|| motCourant.UL == POINTVIR;
 }
 
@@ -1095,7 +1283,7 @@ bool AnalyseurSyntaxique::premierListeDIstruction()
 		|| motCourantEgalAuMotCle("lire")
 		|| motCourant.UL == MOINS
 		|| motCourant.UL == IDENT
-		|| motCourant.UL == DIFF
+		|| motCourant.UL == NEGATION
 		|| motCourant.UL == PAROUV
 		|| motCourant.UL == NBRENTIER
 		|| suivantListeDInstruction();
@@ -1114,97 +1302,140 @@ bool AnalyseurSyntaxique::premierInstruction()
 		|| motCourantEgalAuMotCle("lire")
 		|| motCourant.UL == MOINS
 		|| motCourant.UL == IDENT
-		|| motCourant.UL == DIFF
+		|| motCourant.UL == NEGATION
 		|| motCourant.UL == PAROUV
 		|| motCourant.UL == NBRENTIER;
 }
 
 bool AnalyseurSyntaxique::premierInstructionPrime()
 {
-	return false;
+	return motCourant.UL == CROCHETOUV
+		|| motCourant.UL == AFFEC;
 }
 
 bool AnalyseurSyntaxique::premierInstructionSeconde()
 {
-	return false;
+	return motCourant.UL == CROCHETOUV
+		|| motCourant.UL == AFFEC;
 }
 
 bool AnalyseurSyntaxique::premierSinon()
 {
-	return false;
+	return motCourantEgalAuMotCle("sinon")
+		|| suivantSinon();
 }
 
 bool AnalyseurSyntaxique::premierCases()
 {
-	return false;
+	return motCourantEgalAuMotCle("cas")
+		|| suivantCases();
 }
 
 bool AnalyseurSyntaxique::premierExpression()
 {
-	return false;
+	return motCourant.UL == MOINS
+		|| motCourant.UL == IDENT
+		|| motCourant.UL == NEGATION
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER;
 }
 
 bool AnalyseurSyntaxique::premierExpressionPrime()
 {
-	return false;
+	return motCourant.UL == EGAL
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == INFEG
+		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP
+		|| suivantExpressionPrime();
 }
 
 bool AnalyseurSyntaxique::premierExpressionSimple()
 {
-	return false;
+	return motCourant.UL == MOINS
+		|| motCourant.UL == IDENT
+		|| motCourant.UL == NEGATION
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER;
 }
 
 bool AnalyseurSyntaxique::premierExpressionSimplePrime()
 {
-	return false;
+	return motCourant.UL == PLUS
+		|| motCourant.UL == MOINS
+		|| motCourant.UL == OU
+		|| suivantExpressionSimplePrime();
 }
 
 bool AnalyseurSyntaxique::premierTerme()
 {
-	return false;
+	return motCourant.UL == IDENT
+		|| motCourant.UL == NEGATION
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER;
 }
 
 bool AnalyseurSyntaxique::premierTermePrime()
 {
-	return false;
+	return motCourant.UL == MULTIP
+		|| motCourant.UL == DIVISION
+		|| motCourant.UL == MODULO
+		|| motCourant.UL == ET
+		|| suivantTermePrime();
 }
 
 bool AnalyseurSyntaxique::premierFacteur()
 {
-	return false;
+	return motCourant.UL == IDENT
+		|| motCourant.UL == NEGATION
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER;
 }
 
 bool AnalyseurSyntaxique::premierFacteurPrime()
 {
-	return false;
+	return motCourant.UL == CROCHETOUV
+		|| suivantFacteurPrime();
 }
 
 bool AnalyseurSyntaxique::premierFacteurSeconde()
 {
-	return false;
+	return  motCourant.UL == CROCHETOUV
+		|| suivantFacteurSeconde();
 }
 
 bool AnalyseurSyntaxique::premierListeDArgument()
 {
-	return false;
+	return motCourant.UL == MOINS
+		|| motCourant.UL == IDENT
+		|| motCourant.UL == NEGATION
+		|| motCourant.UL == PAROUV
+		|| motCourant.UL == NBRENTIER;
 }
 
 bool AnalyseurSyntaxique::premierListeDArgumentPrime()
 {
-	return false;
+	return motCourant.UL == VIR
+		|| suivantListeDArgumentPrime();
 }
 
 bool AnalyseurSyntaxique::premierComparaison()
 {
-	return false;
+	return motCourant.UL == EGAL
+		|| motCourant.UL == DIFF
+		|| motCourant.UL == INFEG
+		|| motCourant.UL == SUPEG
+		|| motCourant.UL == INF
+		|| motCourant.UL == SUP;
 }
 
 bool AnalyseurSyntaxique::premierIdentificateur()
 {
-	return false;
+	return motCourant.UL == IDENT;
 }
 
 bool AnalyseurSyntaxique::premierNbEntier()
 {
-	return false;
+	return motCourant.UL == NBRENTIER;
 }

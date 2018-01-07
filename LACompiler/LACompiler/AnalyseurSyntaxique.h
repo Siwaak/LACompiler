@@ -51,17 +51,30 @@ public:
 	bool nbEntier();
 
 	/*Suivants*/
+	bool suivantProgramme();
 	bool suivantListeDeDeclaration();
+	bool suivantDeclaration();
 	bool suivantDeclarationPrime();
 	bool suivantListeDInstruction();
+	bool suivantInstruction();
+	bool suivantInstructionPrime();
+	bool suivantInstructionSeconde();
 	bool suivantSinon();
 	bool suivantCases();
+	bool suivantExpression();
 	bool suivantExpressionPrime();
+	bool suivantExpressionSimple();
 	bool suivantExpressionSimplePrime();
+	bool suivantTerme();
 	bool suivantTermePrime();
+	bool suivantFacteur();
 	bool suivantFacteurPrime();
 	bool suivantFacteurSeconde();
+	bool suivantListeDArgument();
 	bool suivantListeDArgumentPrime();
+	bool suivantComparaison();
+	bool suivantIdentificateur();
+	bool suivantNbEntier();
 	
 	/*Premiers*/
 	bool premierProgramme();
