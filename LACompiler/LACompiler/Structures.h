@@ -109,6 +109,9 @@ inline ostream& operator<<(ostream& out, const UniteLexical ul) {
 	case CROCHETOUV:
 		chaineUl = "CROCHETOUV";
 		break;
+	case CROCHETFER:
+		chaineUl = "CROCHETFER";
+		break;
 
 	case NBRENTIER:
 		chaineUl = "NBRENTIER";
@@ -160,3 +163,8 @@ inline string enMiniscule(string chaine) {
 
 	 return chaine;
 }
+
+typedef struct Identificateur {
+	string nom;
+	string type;
+}identificateur;

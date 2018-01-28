@@ -19,6 +19,9 @@ public:
 	virtual ~AnalyseurSyntaxique();
 
 	/*Verifie si le motCourant correspond au mot cle passé en arguement */
+	bool estDejaDeclare(long);
+	bool nEstPasTableauDim2(long);
+	bool nEstPasTableau(long);
 	bool motCourantEgalAuMotCle(string);
 	void verifierSyntaxe();
 	void prochainMot();
@@ -28,7 +31,7 @@ public:
 	bool programme();
 	bool listeDeDeclaration();
 	bool declaration();
-	bool declarationPrime();
+	bool declarationPrime(long);
 	bool listeDIstruction();
 	bool instruction();
 	bool instructionPrime();
@@ -42,11 +45,12 @@ public:
 	bool terme();
 	bool termePrime();
 	bool facteur();
-	bool facteurPrime();
-	bool facteurSeconde();
+	bool facteurPrime(long);
+	bool facteurSeconde(long);
 	bool listeDArgument();
 	bool listeDArgumentPrime();
 	bool comparaison();
+	//bool comparaisonPrime();
 	bool identificateur();
 	bool nbEntier();
 
@@ -73,6 +77,7 @@ public:
 	bool suivantListeDArgument();
 	bool suivantListeDArgumentPrime();
 	bool suivantComparaison();
+	//bool suivantComparaisonPrime();
 	bool suivantIdentificateur();
 	bool suivantNbEntier();
 	

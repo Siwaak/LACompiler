@@ -16,12 +16,13 @@ class AnalyseurLexical
 	string lexeme;//stockera la valeur s'il s'agit d'un identificateur, d'un mot clé ou d'une constante
 	char c;//Caractere lu
 	int ligne; //le numero de la ligne dans le script
-	map<long, string> tableIdent; //liste des identificateurs;
+	
 
 	
 public:
 	AnalyseurLexical(string);
 	~AnalyseurLexical();
+	map<long, identificateur> tableIdent; //liste des identificateurs;
 	static  map<string, int> tableMotCle;
 	int getLigne()
 	{

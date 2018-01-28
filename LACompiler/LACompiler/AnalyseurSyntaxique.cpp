@@ -26,13 +26,12 @@ bool AnalyseurSyntaxique::motCourantEgalAuMotCle(string chaineLexicale)
 void AnalyseurSyntaxique::verifierSyntaxe()
 {
 	if (programme())
-		cout << "True " << endl;
-	else cout << "False" << endl;
+		cout << "Le programme ne comporte aucune erreure syntaxique " << endl;
+	else cout << "Le programme comporte des erreurs syntaxiques" << endl;
 }
 
 void AnalyseurSyntaxique::prochainMot()
-{
-	
+{	
 	do {
 		cout << motCourant.UL << endl;
 		motCourant = analyseurLexical->uniteSuivante();
@@ -45,6 +44,11 @@ void AnalyseurSyntaxique::prochainMot()
 	} while (motCourant.UL == ERR1 || motCourant.UL == ERR2 || motCourant.UL == ERR3 || motCourant.UL == ERR4);
 
 }
+//void AnalyseurSyntaxique::prochainMot()
+//{
+//	cout << motCourant.UL << endl;
+//	motCourant = analyseurLexical->uniteSuivante();
+//}
 
 bool AnalyseurSyntaxique::programme()
 {
@@ -57,27 +61,14 @@ bool AnalyseurSyntaxique::programme()
 			{
 				if (motCourantEgalAuMotCle("fin"))
 				{
-					prochainMot();
-					while (motCourant.UL!=ERR5)
-					{
-						lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mots trouves apres fin de programme");
-						prochainMot();
-					}
-					return true;
-				}
-				else
-				{
-					lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <fin> attendu");
+					prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 					return true;
 				}
 			}
 		}
 	}
-	else
-	{
-		lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <debut> attendu");
-		return true;
-	}
+
+	return false;
 }
 
 bool AnalyseurSyntaxique::listeDeDeclaration()
@@ -87,15 +78,8 @@ bool AnalyseurSyntaxique::listeDeDeclaration()
 	{
 		if (motCourant.UL == POINTVIR)
 		{
-			cout << analyseurLexical->getLigne() <<"pt vir" << endl;
-
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 			if (listeDeDeclaration())
-				return true;
-		}
-		else
-		{
-			lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <;> attendu");
 				return true;
 		}
 	}
@@ -113,9 +97,17 @@ bool AnalyseurSyntaxique::declaration()
 	if (motCourantEgalAuMotCle("entier"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (identificateur())
-			return true;
-
+		/*if (identificateur())
+			return true;*/
+		if (motCourant.UL == IDENT) 
+		{
+			if (estDejaDeclare(motCourant.attribut))
+			{
+				//erreur semantique
+			}
+			analyseurLexical->tableIdent[motCourant.attribut].type = "entier";
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+		}
 	}
 	//<declaration> –>tableau entier <identificateur>[<nb entier>] <declaration prime>
 	else if (motCourantEgalAuMotCle("tableau"))
@@ -125,95 +117,72 @@ bool AnalyseurSyntaxique::declaration()
 		if (motCourantEgalAuMotCle("entier"))
 		{
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-
-			if (identificateur()) {
+			if (motCourant.UL == IDENT)
+			{
+				if (estDejaDeclare(motCourant.attribut))
+				{
+					//erreur semantique
+				}
+				long attrIdentTab = motCourant.attribut;
+				
+				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 				if (motCourant.UL == CROCHETOUV)
 				{
 					prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-					if (nbEntier()) 
+					if (nbEntier() && motCourant.UL == CROCHETFER)
 					{
-						if (motCourant.UL == CROCHETFER)
-						{
-							prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-							return declarationPrime();
-						}
-						else
-						{
-							lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
-							return true;
-						}
+						prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
+						return declarationPrime(attrIdentTab);
 					}
-				}
-				else
-				{
-					lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <[> attendu");
-						return true;
 				}
 			}
 		}
-		else
-		{
-			lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <entier> attendu");
-				return true;
-		}
-	}
-	else
-	{
-		lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <tableau> ou mot <entier> attendu");
-			return true;
 	}
 	//Il y a une erreur
 	return  false;
 }
 
-bool AnalyseurSyntaxique::declarationPrime()
+bool AnalyseurSyntaxique::declarationPrime(long att)
 {
 	//<declaration prime> –> [ <nb entier> ]
 	if (motCourant.UL == CROCHETOUV)
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (nbEntier())
+		if (nbEntier() && motCourant.UL == CROCHETFER)
 		{
-			if (motCourant.UL == CROCHETFER)
-			{
-				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-				return declarationPrime();
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
-				return true;
-			}
-		}
+			analyseurLexical->tableIdent[att].type = "tableau2";
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
+			return true;
+		}
 	}
 	else if (suivantDeclarationPrime())
+	{
 		//<declaration prime> –>e
+		analyseurLexical->tableIdent[motCourant.attribut].type = "tableau";
 		return true;
+	}	
+
 	return false;
 }
 
 bool AnalyseurSyntaxique::listeDIstruction()
 {
 	//<liste d’instructions> –> <instruction>; <liste d’instructions>
-	if (instruction())
-	{
+	if (instruction()) {
 		if (motCourant.UL == POINTVIR)
 		{
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 			if (listeDIstruction())
 				return true;
 		}
-		else
-		{
-			lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <;> attendu");
-			return true;
-		}
 	}
 	else if (suivantListeDInstruction())
 		//<liste d’instructions>  –>e
 		return true;
+	return false;
 }
 
 bool AnalyseurSyntaxique::instruction()
@@ -230,11 +199,6 @@ bool AnalyseurSyntaxique::instruction()
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 				return true;
 			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <fin> attendu");
-				return true;
-			}
 		}
 	}
 	//<instruction> –> arret
@@ -247,176 +211,95 @@ bool AnalyseurSyntaxique::instruction()
 	else if (motCourantEgalAuMotCle("si"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (expression())
+		if (expression() && motCourantEgalAuMotCle("alors"))
 		{
-			if (motCourantEgalAuMotCle("alors"))
-			{
-				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-				if (instruction())
-				{
-					if (sinon())
-					{
-						return true;
-					}
-				}
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <alors> attendu");
-				return true;
-			}
-
+			return instruction() && sinon();
 		}
-		
 	}
 	//<instruction> –>repeter <instruction> jusque <expression>
 	else if (motCourantEgalAuMotCle("repeter"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (instruction())
+		if (instruction() && motCourantEgalAuMotCle("jusque"))
 		{
-			if (motCourantEgalAuMotCle("jusque"))
-			{
-				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-				if (expression())
-				{
-					return true;
-				}
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <jusque> attendu");
-				return true;
-			}
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
+			return expression();
 		}
 	}
 	//<instruction> –>tantque <expression> faire <instruction>
 	else if (motCourantEgalAuMotCle("tantque"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (expression())
+		if (expression() && motCourantEgalAuMotCle("faire"))
 		{
-			if (motCourantEgalAuMotCle("faire"))
-			{
-				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-				if (instruction())
-				{
-					return true;
-				}
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <faire> attendu");
-				return true;
-			}
-		}	
-		
+			return instruction();
+		}
 	}
 	//<instruction> –>pour <identificateur> allantde <nb entier> a <nb entier> faire <instruction>
 	else if (motCourantEgalAuMotCle("pour"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-		if (identificateur())
+		if (identificateur() && motCourantEgalAuMotCle("allantde"))
 		{
-			if (motCourantEgalAuMotCle("allantde"))
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
+			if (nbEntier() && motCourantEgalAuMotCle("a"))
 			{
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-				if (nbEntier())
-				{
-					if (motCourantEgalAuMotCle("a"))
-					{
-						prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-						if (nbEntier())
-						{
-							if (motCourantEgalAuMotCle("faire"))
-							{
-								prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-								if (instruction())
-								{
-									return true;
-								}
-							}
-							else
-							{
-								lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <faire> attendu");
-								return true;
-							}
-						}	
-					}
-					else
-					{
-						lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": lettre <a> attendu");
-						return true;
-					}
+				if (nbEntier() && motCourantEgalAuMotCle("faire"))
+				{
+					prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
+					return instruction();
 				}
-					
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <allantde> attendu");
-				return true;
 			}
 		}
-		
 	}
 	//<instruction> –>switch <identificateur> faire <cases>
 	else if (motCourantEgalAuMotCle("switch"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (identificateur())
+		if (identificateur() && motCourantEgalAuMotCle("faire"))
 		{
-			if (motCourantEgalAuMotCle("faire"))
-			{
-				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-				if (cases())
-				{
-					return true;
-				}
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <faire> attendu");
-				return true;
-			}
+			return cases();
 		}
-			
 	}
 	//<instruction> -> ecrire <liste d’arguments>
 	else if (motCourantEgalAuMotCle("ecrire"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (listeDArgument())
-		{
-			return true;
-		}
+
+		return listeDArgument();
 	}
 	//<instruction> -> lire <identificateur>
 	else if (motCourantEgalAuMotCle("lire"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (identificateur())
-		{
-			return true;
-		}
-	}
-	//<instruction> -> <expression>
-	else if (expression())
-	{
-		return true;
+
+		return identificateur();
 	}
 	//<instruction> -> <identificateur> <instruction prime>
 	else if (identificateur())
 	{
-		if (instructionPrime())
-		{
-			return true;
-		}
+
+		return instructionPrime();
 	}
+	//<instruction> -> <expression>
+	else if (expression())
+	{
+
+		return true;
+	}
+
 
 	return false;
 }
@@ -444,11 +327,6 @@ bool AnalyseurSyntaxique::instructionPrime()
 					return true;
 				}
 				return false;
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
-				return true;
 			}
 		}
 	}
@@ -484,16 +362,6 @@ bool AnalyseurSyntaxique::instructionSeconde()
 					}
 					return false;
 				}
-				else
-				{
-					lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <==> attendu");
-					return true;
-				}
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
-				return true;
 			}
 		}
 	}
@@ -533,22 +401,12 @@ bool AnalyseurSyntaxique::cases()
 					{
 						prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 						if (cases())
-						{
+
 							return true;
-						}
+
 						return false;
 					}
-					else
-					{
-						lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": mot <arret> attendu");
-						return true;
-					}
 				}
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <:> attendu");
-				return true;
 			}
 		}
 	}
@@ -614,40 +472,19 @@ bool AnalyseurSyntaxique::expressionSimple()
 bool AnalyseurSyntaxique::expressionSimplePrime()
 {
 	//<expression simple prime> –> +<terme> <expression simple prime>
-	if (motCourant.UL == PLUS) 
-	{
+	if (motCourant.UL == PLUS) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (terme())
-		{
-			if (expressionSimplePrime())
-			{
-				return true;
-			}
-		}
+		return terme() && expressionSimplePrime();
 	}
 	//<expression simple prime> –>- <terme> <expression simple prime>
-	else if (motCourant.UL == MOINS) 
-	{
+	else if (motCourant.UL == MOINS) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (terme())
-		{
-			if (expressionSimplePrime())
-			{
-				return true;
-			}
-		}
+		return terme() && expressionSimplePrime();
 	}
 	//<expression simple prime> –>|| <terme> <expression simple prime>
-	else if (motCourant.UL == OU) 
-	{
+	else if (motCourant.UL == OU) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (terme())
-		{
-			if (expressionSimplePrime())
-			{
-				return true;
-			}
-		}
+		return terme() && expressionSimplePrime();
 	}
 
 	else if (suivantExpressionSimplePrime())
@@ -660,13 +497,7 @@ bool AnalyseurSyntaxique::expressionSimplePrime()
 bool AnalyseurSyntaxique::terme()
 {
 	//<terme> –> <facteur> <terme prime>
-	if (facteur())
-	{
-		if (termePrime())
-		{
-			return true;
-		}
-	}
+	return facteur() && termePrime();
 }
 
 bool AnalyseurSyntaxique::termePrime()
@@ -674,50 +505,27 @@ bool AnalyseurSyntaxique::termePrime()
 	//<terme prime> –> * <facteur> <terme prime>
 	if (motCourant.UL == MULTIP) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (facteur())
-		{
-			if (termePrime())
-			{
-				return true;
-			}
-		}
+		return facteur() && termePrime();
 	}
 	//<terme prime> –>/ <facteur> <terme prime>
 	else if (motCourant.UL == DIVISION) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (facteur())
-		{
-			if (termePrime())
-			{
-				return true;
-			}
-		}
+		return facteur() && termePrime();
 	}
 	//<terme prime> –>% <facteur> <terme prime>
 	else if (motCourant.UL == MODULO) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (facteur())
-		{
-			if (termePrime())
-			{
-				return true;
-			}
-		}
+		return facteur() && termePrime();
 
 	}
 	//<terme prime> –>&& <terme prime>
 	else if (motCourant.UL == ET) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (termePrime())
-		{
-			return true;
-		}
+		return termePrime();
 	}
 	//<terme prime> –>e
 	else if (suivantTermePrime())
-	{
 		return true;
-	}
 	return false;
 }
 
@@ -734,50 +542,40 @@ bool AnalyseurSyntaxique::facteur()
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 				return true;
 			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <)> attendu");
-				return true;
-			}
 			return false;
 		}
 	}
 	//<facteur> –> ! <facteur>
-	else if (motCourant.UL == NEGATION) {
+	else if (motCourant.UL == DIFF) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (facteur())
-		{
-			return true;
-		}
+		return facteur();
 	}
 	//<facteur> –><identificateur> <facteur prime>
-	else if (identificateur()) {
-		if (facteurPrime())
-		{
-			return true;
-		}
+	//else if (identificateur()) {
+	else if (motCourant.UL == MOTCLE) {
+		long attrib = motCourant.attribut;
+		prochainMot();
+		return facteurPrime(attrib);
 	}
 	return false;
 }
 
-bool AnalyseurSyntaxique::facteurPrime()
+bool AnalyseurSyntaxique::facteurPrime(long attr)
 {
 	//<facteur prime> –> [ <expression simple> ] <facteur seconde>
 	if (motCourant.UL == CROCHETOUV) {
+		if (nEstPasTableau(attr))
+		{
+			//erreur Sémantique
+			cout << "L'identificateur " << attr << " n'est pas un tableau" << endl;
+		}
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expressionSimple()) {
 			if (motCourant.UL == CROCHETFER) {
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-				if (facteurSeconde())
-				{
-					return true;
-				}
+				return facteurSeconde(attr);
 			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
-				return true;
-			}
+
 		}
 	}
 	//<facteur prime> –>e
@@ -788,52 +586,40 @@ bool AnalyseurSyntaxique::facteurPrime()
 	return false;
 }
 
-bool AnalyseurSyntaxique::facteurSeconde()
+bool AnalyseurSyntaxique::facteurSeconde(long attr)
 {
 	if (motCourant.UL == CROCHETOUV)
 	{
-		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (expressionSimple())
+		if (nEstPasTableauDim2(attr))
 		{
-			if (motCourant.UL == CROCHETFER)
-			{
-				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-				return true;
-			}
-			else
-			{
-				lesErreurs.ajouterErreur(to_string(analyseurLexical->getLigne()) + ": symbole <]> attendu");
-				return true;
-			}
+			//err Sémantique
+			cout << "L'identificateur " << attr << " n'est pas un tableau à 2 dimensions" << endl;
 		}
-			
+		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+		if (expressionSimple() && motCourant.UL == CROCHETFER)
+		{
+			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
+			return true;
+		}
 	}
 	else if (suivantFacteurSeconde())
 		return true;
+
+
 	return false;
 }
 
 bool AnalyseurSyntaxique::listeDArgument()
 {
-	if (expression())
-	{
-		if (listeDArgumentPrime())
-		{
-			return true;
-		}
-	}
-		
+	return expression() && listeDArgumentPrime();
 }
 
 bool AnalyseurSyntaxique::listeDArgumentPrime()
 {
-	if (motCourant.UL == VIR) 
-	{
+	if (motCourant.UL == VIR) {
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (listeDArgument())
-		{
-			return true;
-		}
+		return listeDArgument();
 	}
 
 	else if (suivantListeDArgumentPrime())
@@ -847,6 +633,7 @@ bool AnalyseurSyntaxique::comparaison()
 	if (motCourant.UL == AFFEC)
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
 		return true;
 	}
 	else if (motCourant.UL == DIFF)
@@ -859,7 +646,7 @@ bool AnalyseurSyntaxique::comparaison()
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		return true;
 	}
-	else if (motCourant.UL == INF)
+	else if (motCourant.UL == SUP)
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		return true;
@@ -878,6 +665,7 @@ bool AnalyseurSyntaxique::comparaison()
 }
 
 
+
 bool AnalyseurSyntaxique::identificateur()
 {
 	if (motCourant.UL == IDENT)
@@ -885,10 +673,8 @@ bool AnalyseurSyntaxique::identificateur()
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 bool AnalyseurSyntaxique::nbEntier()
@@ -898,10 +684,8 @@ bool AnalyseurSyntaxique::nbEntier()
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 bool AnalyseurSyntaxique::suivantProgramme()
 {
