@@ -169,7 +169,6 @@ bool AnalyseurSyntaxique::declaration()
 					cout << "Le tableau " << analyseurLexical->dernierIdent << " est deja declaree" << endl;
 				}
 
-				long attrIdentTab = motCourant.attribut;
 				
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 				if (motCourant.UL == CROCHETOUV)
@@ -178,12 +177,13 @@ bool AnalyseurSyntaxique::declaration()
 
 					if (motCourant.UL == NBRENTIER)
 					{
+						long nbre = motCourant.attribut;
 						prochainMot();
 						if (motCourant.UL == CROCHETFER)
 						{
 							prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-							return declarationPrime(attrIdentTab);
+							return declarationPrime(index, nbre);
 						}
 						else
 							cout << analyseurLexical->getLigne() << ": Crochet fermante attendu" << endl;
@@ -209,25 +209,34 @@ bool AnalyseurSyntaxique::declaration()
 	
 }
 
-bool AnalyseurSyntaxique::declarationPrime(long att)
+bool AnalyseurSyntaxique::declarationPrime(long index,long nbre )
 {
 	//<declaration prime> –> [ <nb entier> ]
 	if (motCourant.UL == CROCHETOUV)
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (nbEntier() && motCourant.UL == CROCHETFER)
+		if (motCourant.UL == NBRENTIER)
 		{
-			analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "tableau2");
-			
-			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+			long nbre2 = motCourant.attribut;
+			prochainMot();
+			if (motCourant.UL == CROCHETFER)
+			{
+				analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "tableau2");
+				analyseurLexical->tableIdent[index].taille1 = nbre;
+				analyseurLexical->tableIdent[index].taille2 = nbre2;
 
-			return true;
+				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
+				return true;
+			}
 		}
+
 	}
 	else if (suivantDeclarationPrime())
 	{
 		//<declaration prime> –>e
 		analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "tableau");
+		analyseurLexical->tableIdent[index].taille1 = nbre;
 		return true;
 	}	
 
@@ -312,9 +321,19 @@ bool AnalyseurSyntaxique::instruction()
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (motCourant.UL == IDENT)
 		{
-			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+			long index = motCourant.attribut;
+			if (!estDejaDeclare(index))
 			{
 				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+			}
+			else if (!nEstPasTableau(index))
+			{
+				cout << analyseurLexical->dernierIdent << " est un tableau " << endl;
+			}
+
+			else if (!nEstPasTableauDim2(index))
+			{
+				cout << analyseurLexical->dernierIdent << " est une matrice " << endl;
 			}
 			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
 			prochainMot();
@@ -343,9 +362,19 @@ bool AnalyseurSyntaxique::instruction()
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (motCourant.UL == IDENT)
 		{
-			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+			long index = motCourant.attribut;
+			if (!estDejaDeclare(index))
 			{
 				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+			}
+			else if (!nEstPasTableau(index))
+			{
+				cout << analyseurLexical->dernierIdent << " est un tableau " << endl;
+			}
+
+			else if (!nEstPasTableauDim2(index))
+			{
+				cout << analyseurLexical->dernierIdent << " est une matrice " << endl;
 			}
 			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
 			prochainMot();
@@ -370,9 +399,19 @@ bool AnalyseurSyntaxique::instruction()
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (motCourant.UL == IDENT)
 		{
-			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+			long index = motCourant.attribut;
+			if (!estDejaDeclare(index))
 			{
 				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+			}
+			else if (!nEstPasTableau(index))
+			{
+				cout << analyseurLexical->dernierIdent << " est un tableau " << endl;
+			}
+
+			else if (!nEstPasTableauDim2(index))
+			{
+				cout << analyseurLexical->dernierIdent << " est une matrice " << endl;
 			}
 			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
 			prochainMot();
@@ -382,16 +421,18 @@ bool AnalyseurSyntaxique::instruction()
 	}
 	//<instruction> -> <identificateur> <instruction prime>
 	else if (motCourant.UL == IDENT)
-	{		
-			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
-			{
-				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
-			}
-			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+	{
+		long index = motCourant.attribut;
+		
+		if (!estDejaDeclare(index))
+		{
+			cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+		}
+		//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+		
 			
-			long index = analyseurLexical->hashCode(analyseurLexical->dernierIdent);
 			prochainMot();
-
+			
 		return instructionPrime(index);
 	}
 	//<instruction> -> <expression>
@@ -440,7 +481,7 @@ bool AnalyseurSyntaxique::instructionSeconde(long index)
 	{
 		if (nEstPasTableau(index))
 		{
-			cout << analyseurLexical->tableIdent[index].nom << "n'est pas un tableu" << endl;
+			cout << analyseurLexical->tableIdent[index].nom << "n'est pas un tableau" << endl;
 		}
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expression())
@@ -454,7 +495,7 @@ bool AnalyseurSyntaxique::instructionSeconde(long index)
 	{
 		if (nEstPasTableauDim2(index))
 		{
-			cout << analyseurLexical->tableIdent[index].nom << "n'est pas un tableu à 2 dimensions" << endl;
+			cout << analyseurLexical->tableIdent[index].nom << "n'est pas  une matrice" << endl;
 		}
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expressionSimple())
@@ -705,7 +746,7 @@ bool AnalyseurSyntaxique::facteurSeconde(long index)
 		if (nEstPasTableauDim2(index))
 		{
 			//err Sémantique
-			cout << analyseurLexical->dernierIdent << " n'est pas un tableau à 2 dimensions" << endl;
+			cout << analyseurLexical->dernierIdent << " n'est pas  une matrice" << endl;
 		}
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expressionSimple() && motCourant.UL == CROCHETFER)

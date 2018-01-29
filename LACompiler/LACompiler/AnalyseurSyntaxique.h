@@ -32,7 +32,7 @@ public:
 	bool programme();
 	bool listeDeDeclaration();
 	bool declaration();
-	bool declarationPrime(long);
+	bool declarationPrime(long,long);
 	bool listeDIstruction();
 	bool instruction();
 	bool instructionPrime(long);
