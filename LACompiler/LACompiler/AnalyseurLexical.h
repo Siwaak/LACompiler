@@ -28,6 +28,8 @@ public:
 	{
 		return ligne;
 	}
+	string dernierIdent;
+	void ajouterIdent(string,string);
 	long hashCode(string); //calcul un entier (index dans un talbeau) à partire d'une chaine
 
 	bool estBlanc(char);//Vérifie si un caractère est blanc

@@ -167,4 +167,6 @@ inline string enMiniscule(string chaine) {
 typedef struct Identificateur {
 	string nom;
 	string type;
+	int taille1;
+	int taille2;
 }identificateur;

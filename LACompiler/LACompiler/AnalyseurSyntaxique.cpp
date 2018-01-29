@@ -16,6 +16,23 @@ AnalyseurSyntaxique::~AnalyseurSyntaxique()
 
 }
 
+bool AnalyseurSyntaxique::estDejaDeclare(long index)
+{
+	if (analyseurLexical->tableIdent.find(index) != analyseurLexical->tableIdent.end())
+		return true;
+	return false;
+}
+
+bool AnalyseurSyntaxique::nEstPasTableauDim2(long index)
+{
+	return analyseurLexical->tableIdent[index].type != "tableau2";
+}
+
+bool AnalyseurSyntaxique::nEstPasTableau(long index)
+{
+	return analyseurLexical->tableIdent[index].type != "tableau";
+}
+
 
 bool AnalyseurSyntaxique::motCourantEgalAuMotCle(string chaineLexicale)
 {
@@ -33,7 +50,7 @@ void AnalyseurSyntaxique::verifierSyntaxe()
 void AnalyseurSyntaxique::prochainMot()
 {	
 	do {
-		cout << motCourant.UL << endl;
+		//cout << motCourant.UL << endl;
 		motCourant = analyseurLexical->uniteSuivante();
 
 		if (motCourant.UL == ERR1 || motCourant.UL == ERR2 || motCourant.UL == ERR3 || motCourant.UL == ERR4)
@@ -64,8 +81,21 @@ bool AnalyseurSyntaxique::programme()
 					prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 					return true;
 				}
+				else
+				{
+					cout << analyseurLexical->getLigne() << ": Mot cle 'fin' attendu" << endl;
+				}
+			}
+			else
+			{
+				cout << analyseurLexical->getLigne() << ": Liste d'instructions attendu" << endl;
+				return false;
 			}
 		}
+	}
+	else
+	{
+		cout << analyseurLexical->getLigne() << ": Mot cle 'debut' attendu" << endl;
 	}
 
 	return false;
@@ -81,6 +111,10 @@ bool AnalyseurSyntaxique::listeDeDeclaration()
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 			if (listeDeDeclaration())
 				return true;
+		}
+		else
+		{
+			cout << analyseurLexical->getLigne() << ": Point virgule attendu" << endl;
 		}
 	}
 	else if (suivantListeDeDeclaration())
@@ -100,13 +134,22 @@ bool AnalyseurSyntaxique::declaration()
 		/*if (identificateur())
 			return true;*/
 		if (motCourant.UL == IDENT) 
-		{
+		{ 
 			if (estDejaDeclare(motCourant.attribut))
 			{
 				//erreur semantique
+				cout << "La variable " << analyseurLexical->dernierIdent << " est deja déclarée" << endl;
 			}
-			analyseurLexical->tableIdent[motCourant.attribut].type = "entier";
+			
+				analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+			
+			//analyseurLexical->tableIdent[motCourant.attribut].type = "entier";
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+			return true;
+		}
+		else
+		{
+			cout << analyseurLexical->getLigne() << ": Identificateur attendu" << endl;
 		}
 	}
 	//<declaration> –>tableau entier <identificateur>[<nb entier>] <declaration prime>
@@ -119,10 +162,13 @@ bool AnalyseurSyntaxique::declaration()
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 			if (motCourant.UL == IDENT)
 			{
-				if (estDejaDeclare(motCourant.attribut))
+				long index = motCourant.attribut;
+
+				if (estDejaDeclare(index))
 				{
-					//erreur semantique
+					cout << "Le tableau " << analyseurLexical->dernierIdent << " est deja declaree" << endl;
 				}
+
 				long attrIdentTab = motCourant.attribut;
 				
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
@@ -130,18 +176,37 @@ bool AnalyseurSyntaxique::declaration()
 				{
 					prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-					if (nbEntier() && motCourant.UL == CROCHETFER)
+					if (motCourant.UL == NBRENTIER)
 					{
-						prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+						prochainMot();
+						if (motCourant.UL == CROCHETFER)
+						{
+							prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-						return declarationPrime(attrIdentTab);
+							return declarationPrime(attrIdentTab);
+						}
+						else
+							cout << analyseurLexical->getLigne() << ": Crochet fermante attendu" << endl;
+
 					}
+
 				}
+				else
+					cout << analyseurLexical->getLigne() << ": Crochet ouvrante attendu" << endl;
 			}
+			else
+				cout << analyseurLexical->getLigne() << ": Identificateur attendu" << endl;
+		}
+		else
+		{
+			cout << analyseurLexical->getLigne() << ": Mot cle 'entier' attendu" << endl;
 		}
 	}
-	//Il y a une erreur
+		
 	return  false;
+	
+
+	
 }
 
 bool AnalyseurSyntaxique::declarationPrime(long att)
@@ -152,7 +217,8 @@ bool AnalyseurSyntaxique::declarationPrime(long att)
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (nbEntier() && motCourant.UL == CROCHETFER)
 		{
-			analyseurLexical->tableIdent[att].type = "tableau2";
+			analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "tableau2");
+			
 			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
 			return true;
@@ -161,7 +227,7 @@ bool AnalyseurSyntaxique::declarationPrime(long att)
 	else if (suivantDeclarationPrime())
 	{
 		//<declaration prime> –>e
-		analyseurLexical->tableIdent[motCourant.attribut].type = "tableau";
+		analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "tableau");
 		return true;
 	}	
 
@@ -244,20 +310,29 @@ bool AnalyseurSyntaxique::instruction()
 	else if (motCourantEgalAuMotCle("pour"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-
-		if (identificateur() && motCourantEgalAuMotCle("allantde"))
+		if (motCourant.UL == IDENT)
 		{
-			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+			{
+				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+			}
+			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+			prochainMot();
 
-			if (nbEntier() && motCourantEgalAuMotCle("a"))
+			if (motCourantEgalAuMotCle("allantde"))
 			{
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-				if (nbEntier() && motCourantEgalAuMotCle("faire"))
+				if (nbEntier() && motCourantEgalAuMotCle("a"))
 				{
 					prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-					return instruction();
+					if (nbEntier() && motCourantEgalAuMotCle("faire"))
+					{
+						prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+
+						return instruction();
+					}
 				}
 			}
 		}
@@ -266,11 +341,20 @@ bool AnalyseurSyntaxique::instruction()
 	else if (motCourantEgalAuMotCle("switch"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-		if (identificateur() && motCourantEgalAuMotCle("faire"))
+		if (motCourant.UL == IDENT)
 		{
-			prochainMot();//motCourant = analyseurLexical->uniteSuivante();
+			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+			{
+				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+			}
+			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+			prochainMot();
+			if (motCourantEgalAuMotCle("faire"))
+			{
+				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 
-			return cases();
+				return cases();
+			}
 		}
 	}
 	//<instruction> -> ecrire <liste d’arguments>
@@ -284,19 +368,36 @@ bool AnalyseurSyntaxique::instruction()
 	else if (motCourantEgalAuMotCle("lire"))
 	{
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-
-		return identificateur();
+		if (motCourant.UL == IDENT)
+		{
+			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+			{
+				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+			}
+			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+			prochainMot();
+			return true;
+		}
+		return false;
 	}
 	//<instruction> -> <identificateur> <instruction prime>
-	else if (identificateur())
-	{
+	else if (motCourant.UL == IDENT)
+	{		
+			if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+			{
+				cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+			}
+			//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+			
+			long index = analyseurLexical->hashCode(analyseurLexical->dernierIdent);
+			prochainMot();
 
-		return instructionPrime();
+		return instructionPrime(index);
 	}
 	//<instruction> -> <expression>
 	else if (expression())
 	{
-
+		
 		return true;
 	}
 
@@ -304,7 +405,7 @@ bool AnalyseurSyntaxique::instruction()
 	return false;
 }
 
-bool AnalyseurSyntaxique::instructionPrime()
+bool AnalyseurSyntaxique::instructionPrime(long index)
 {
 	if (motCourant.UL == AFFEC)
 	{
@@ -322,7 +423,7 @@ bool AnalyseurSyntaxique::instructionPrime()
 			if (motCourant.UL == CROCHETFER)
 			{
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-				if (instructionSeconde())
+				if (instructionSeconde(index))
 				{
 					return true;
 				}
@@ -333,10 +434,14 @@ bool AnalyseurSyntaxique::instructionPrime()
 	return false;
 }
 
-bool AnalyseurSyntaxique::instructionSeconde()
+bool AnalyseurSyntaxique::instructionSeconde(long index)
 {
 	if (motCourant.UL == AFFEC)
 	{
+		if (nEstPasTableau(index))
+		{
+			cout << analyseurLexical->tableIdent[index].nom << "n'est pas un tableu" << endl;
+		}
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expression())
 		{
@@ -347,6 +452,10 @@ bool AnalyseurSyntaxique::instructionSeconde()
 	}
 	else if (motCourant.UL == CROCHETOUV)
 	{
+		if (nEstPasTableauDim2(index))
+		{
+			cout << analyseurLexical->tableIdent[index].nom << "n'est pas un tableu à 2 dimensions" << endl;
+		}
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expressionSimple())
 		{
@@ -552,28 +661,30 @@ bool AnalyseurSyntaxique::facteur()
 	}
 	//<facteur> –><identificateur> <facteur prime>
 	//else if (identificateur()) {
-	else if (motCourant.UL == MOTCLE) {
-		long attrib = motCourant.attribut;
+	else if (motCourant.UL == IDENT) {
+		if (!estDejaDeclare(analyseurLexical->hashCode(analyseurLexical->dernierIdent)))
+		{
+			cout << analyseurLexical->dernierIdent << " n'est pas encore declare" << endl;
+		}
+		//analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "entier");
+
+		long index = analyseurLexical->hashCode(analyseurLexical->dernierIdent);
 		prochainMot();
-		return facteurPrime(attrib);
+		return facteurPrime(index);
 	}
 	return false;
 }
 
-bool AnalyseurSyntaxique::facteurPrime(long attr)
+bool AnalyseurSyntaxique::facteurPrime(long index)
 {
 	//<facteur prime> –> [ <expression simple> ] <facteur seconde>
 	if (motCourant.UL == CROCHETOUV) {
-		if (nEstPasTableau(attr))
-		{
-			//erreur Sémantique
-			cout << "L'identificateur " << attr << " n'est pas un tableau" << endl;
-		}
+		
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expressionSimple()) {
 			if (motCourant.UL == CROCHETFER) {
 				prochainMot();//motCourant = analyseurLexical->uniteSuivante();
-				return facteurSeconde(attr);
+				return facteurSeconde(index);
 			}
 
 		}
@@ -586,14 +697,15 @@ bool AnalyseurSyntaxique::facteurPrime(long attr)
 	return false;
 }
 
-bool AnalyseurSyntaxique::facteurSeconde(long attr)
+bool AnalyseurSyntaxique::facteurSeconde(long index)
 {
 	if (motCourant.UL == CROCHETOUV)
 	{
-		if (nEstPasTableauDim2(attr))
+
+		if (nEstPasTableauDim2(index))
 		{
 			//err Sémantique
-			cout << "L'identificateur " << attr << " n'est pas un tableau à 2 dimensions" << endl;
+			cout << analyseurLexical->dernierIdent << " n'est pas un tableau à 2 dimensions" << endl;
 		}
 		prochainMot();//motCourant = analyseurLexical->uniteSuivante();
 		if (expressionSimple() && motCourant.UL == CROCHETFER)
@@ -604,8 +716,14 @@ bool AnalyseurSyntaxique::facteurSeconde(long attr)
 		}
 	}
 	else if (suivantFacteurSeconde())
+	{
+		if (nEstPasTableau(index))
+		{
+			//err Sémantique
+			cout << analyseurLexical->dernierIdent << " n'est pas un tableau" << endl;
+		}
 		return true;
-
+	}
 
 	return false;
 }

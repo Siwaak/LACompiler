@@ -30,27 +30,29 @@ using namespace std;
 
 AnalyseurLexical::AnalyseurLexical(string fichier)
 {
-	//code = "debut 		entier x;	debut		i = 1;	i allantde 1 a 5 faire		debut		lire i		fin;	fin;	fin		DQFDS";// initialisation du code;
-	code = "debut 		entier x; entier i; tableau entier T[13];	debut	{ lecture du tableau T }	i = 1;	tantque i <= 13 faire		debut		lire i		fin		fin 		fin";
+	//code = "debut 		entier x; entier i; tableau entier T[13];	debut	{ lecture du tableau T }	i = 1;	tantque i <= 13 faire		debut		lire i		fin		fin 		fin";
+	code = "";
 	c = ' ';//Initialisation du caractère par un esapce
 	ligne = 1;
-	//ifstream lecteurFichier;
-	//lecteurFichier.open(fichier.c_str());
+	dernierIdent = "";
+	ifstream lecteurFichier;
+	lecteurFichier.open(fichier.c_str());
 
-	//// Vérification de l'ouverture du fichier
-	//if (!lecteurFichier.is_open()) {
-	//	cout << "Impossible d'ouvrire le fichier!" << endl;
-	//	exit(EXIT_FAILURE);
-	//}
-	//string ligne;
+	// Vérification de l'ouverture du fichier
+	if (!lecteurFichier.is_open()) {
+		cout << "Impossible d'ouvrire le fichier!" << endl;
+		exit(EXIT_FAILURE);
+	}
+	string ligne;
 
-	//// Copie du contenue du fichier dans la variable code
-	//while (getline(lecteurFichier, ligne)) {
-	//	code += ligne + '\n';
-	//}
+	// Copie du contenue du fichier dans la variable code
+	while (getline(lecteurFichier, ligne)) {
+		//cout << ligne << endl;
+		code += ligne + '\n';
+	}
 
-	//// Fermeture du fichier
-	//lecteurFichier.close();
+	// Fermeture du fichier
+	lecteurFichier.close();
 }
 
 
@@ -61,6 +63,12 @@ AnalyseurLexical::~AnalyseurLexical()
 
 //fonction de hachage
 //h(i)=h(i-1)*33+codeASCII du caractère;
+
+void AnalyseurLexical::ajouterIdent(string mot,string typeId)
+{
+	tableIdent[hashCode(mot)].nom = mot;
+	tableIdent[hashCode(mot)].type = typeId;
+}
 
 long AnalyseurLexical::hashCode(string chaine)
 {
@@ -283,7 +291,9 @@ TLexeme AnalyseurLexical::uniteSuivante()
 			}
 			else {
 				lex.UL = IDENT;
-				lex.attribut = indexIdentifiant(lexeme);
+				//lex.attribut = indexIdentifiant(lexeme);
+				dernierIdent = lexeme;
+				lex.attribut = hashCode(lexeme);
 			}
 
 		}
@@ -319,7 +329,7 @@ long AnalyseurLexical::indexIdentifiant(string chaine)
 {
 	string mot = enMiniscule(chaine);
 	long index = hashCode(mot);
-	tableIdent[index] = mot;
+	tableIdent[index].nom = mot;
 
 	return index;
 }
@@ -380,8 +390,8 @@ void AnalyseurLexical::afficherTableIdentificateurs()
 {
 	cout << endl << endl << "TABLE DES IDENTIFICATEURS" << endl;
 	cout << "======================================" << endl << endl;
-	for (map<long, string>::iterator elem = tableIdent.begin(); elem != tableIdent.end(); elem++)
+	for (map<long, identificateur>::iterator elem = tableIdent.begin(); elem != tableIdent.end(); elem++)
 	{
-		std::cout << elem->first << "\t" << elem->second << endl;
+		std::cout << elem->first << "\t" << (elem->second).nom << endl;
 	}
 }

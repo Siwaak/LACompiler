@@ -18,10 +18,11 @@ public:
 	AnalyseurSyntaxique(string);
 	virtual ~AnalyseurSyntaxique();
 
-	/*Verifie si le motCourant correspond au mot cle passé en arguement */
 	bool estDejaDeclare(long);
 	bool nEstPasTableauDim2(long);
 	bool nEstPasTableau(long);
+
+	/*Verifie si le motCourant correspond au mot cle passé en arguement */
 	bool motCourantEgalAuMotCle(string);
 	void verifierSyntaxe();
 	void prochainMot();
@@ -34,8 +35,8 @@ public:
 	bool declarationPrime(long);
 	bool listeDIstruction();
 	bool instruction();
-	bool instructionPrime();
-	bool instructionSeconde();
+	bool instructionPrime(long);
+	bool instructionSeconde(long);
 	bool sinon();
 	bool cases();
 	bool expression();
