@@ -23,9 +23,9 @@ bool AnalyseurSyntaxique::estDejaDeclare(long index)
 	return false;
 }
 
-bool AnalyseurSyntaxique::nEstPasTableauDim2(long index)
+bool AnalyseurSyntaxique::nEstPasMatrice(long index)
 {
-	return analyseurLexical->tableIdent[index].type != "tableau2";
+	return analyseurLexical->tableIdent[index].type != "matrice";
 }
 
 bool AnalyseurSyntaxique::nEstPasTableau(long index)
@@ -221,7 +221,7 @@ bool AnalyseurSyntaxique::declarationPrime(long index,long nbre )
 			prochainMot();
 			if (motCourant.UL == CROCHETFER)
 			{
-				analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "tableau2");
+				analyseurLexical->ajouterIdent(analyseurLexical->dernierIdent, "matrice");
 				analyseurLexical->tableIdent[index].taille1 = nbre;
 				analyseurLexical->tableIdent[index].taille2 = nbre2;
 
@@ -331,7 +331,7 @@ bool AnalyseurSyntaxique::instruction()
 				cout << analyseurLexical->dernierIdent << " est un tableau " << endl;
 			}
 
-			else if (!nEstPasTableauDim2(index))
+			else if (!nEstPasMatrice(index))
 			{
 				cout << analyseurLexical->dernierIdent << " est une matrice " << endl;
 			}
@@ -372,7 +372,7 @@ bool AnalyseurSyntaxique::instruction()
 				cout << analyseurLexical->dernierIdent << " est un tableau " << endl;
 			}
 
-			else if (!nEstPasTableauDim2(index))
+			else if (!nEstPasMatrice(index))
 			{
 				cout << analyseurLexical->dernierIdent << " est une matrice " << endl;
 			}
@@ -409,7 +409,7 @@ bool AnalyseurSyntaxique::instruction()
 				cout << analyseurLexical->dernierIdent << " est un tableau " << endl;
 			}
 
-			else if (!nEstPasTableauDim2(index))
+			else if (!nEstPasMatrice(index))
 			{
 				cout << analyseurLexical->dernierIdent << " est une matrice " << endl;
 			}
@@ -493,7 +493,7 @@ bool AnalyseurSyntaxique::instructionSeconde(long index)
 	}
 	else if (motCourant.UL == CROCHETOUV)
 	{
-		if (nEstPasTableauDim2(index))
+		if (nEstPasMatrice(index))
 		{
 			cout << analyseurLexical->tableIdent[index].nom << "n'est pas  une matrice" << endl;
 		}
@@ -743,7 +743,7 @@ bool AnalyseurSyntaxique::facteurSeconde(long index)
 	if (motCourant.UL == CROCHETOUV)
 	{
 
-		if (nEstPasTableauDim2(index))
+		if (nEstPasMatrice(index))
 		{
 			//err Sémantique
 			cout << analyseurLexical->dernierIdent << " n'est pas  une matrice" << endl;

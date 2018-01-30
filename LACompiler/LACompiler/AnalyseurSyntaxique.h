@@ -19,7 +19,7 @@ public:
 	virtual ~AnalyseurSyntaxique();
 
 	bool estDejaDeclare(long);
-	bool nEstPasTableauDim2(long);
+	bool nEstPasMatrice(long);
 	bool nEstPasTableau(long);
 
 	/*Verifie si le motCourant correspond au mot cle passé en arguement */
